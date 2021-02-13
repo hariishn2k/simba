@@ -12,7 +12,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 const nicknames = require('./nicknames.json');
-const config = require('./config.json');
+const config = process.env;
 const prefix = '!';
 const servants = require('./nice_servant_jp.json');
 const NAServants = require('./nice_servant.json');
