@@ -5,7 +5,6 @@ geckodriver.log
 output.csv
 *.ipynb
 data.json
-nice_servant.json
 package-lock.json
 skills-passive-text.json
 servant-list.js
