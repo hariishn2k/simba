@@ -1,1 +1,1 @@
-web: npm start -Dserver.port=$PORTnode_modules_old
+worker: npm start -Dserver.port=$PORTnode_modules_old
