@@ -1,1 +1,1 @@
-worker: npm start -Dserver.port=$PORTnode_modules_old
+worker: PORT=5000 npm start
