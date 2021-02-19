@@ -216,7 +216,10 @@ async function test (servantId, argStr, servantName) {
 		'--star'		:	Boolean,
 		'--beast'		:	Boolean
 
-	}, {argv: argStr.split(/\s+/g)});} catch(e) {console.log(e);return e;}
+	}, {
+		argv: argStr.split(/\s+/g),
+		permissive: true
+	});} catch(e) {console.log(e);return e;}
 
 	for (const key of Object.keys(args)) {
 		if (key !== '_') {
@@ -403,6 +406,10 @@ async function test (servantId, argStr, servantName) {
 
 		if (pMod > 10) {
 			warnMessage += 'Powermod cannot go above 1000%, setting to 1000%\n';
+		}
+
+		if (args._ == null) {
+			warnMessage += `Unknown argument: ${Object.keys(args._)[0]}. \n`;
 		}
 
 		let val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + cardMod), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * f(extraCardModifier)
