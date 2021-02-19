@@ -409,7 +409,7 @@ async function test (servantId, argStr, servantName) {
 		}
 
 		if (args._ == null) {
-			warnMessage += `Unknown argument: ${Object.keys(args._)[0]}. \n`;
+			warnMessage += `Unknown argument: "${args._[0]}". \n`;
 		}
 
 		let val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + cardMod), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * f(extraCardModifier)
