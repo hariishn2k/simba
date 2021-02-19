@@ -408,7 +408,7 @@ async function test (servantId, argStr, servantName) {
 			warnMessage += 'Powermod cannot go above 1000%, setting to 1000%\n';
 		}
 
-		if (args._ == null) {
+		if (args._ != null) {
 			warnMessage += `Unknown argument: "${args._[0]}". \n`;
 		}
 
