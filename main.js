@@ -357,7 +357,7 @@ async function test (servantId, argStr, servantName) {
 			}
 		}
 		else {
-			cardValue = (typeof args.npvalue !== 'undefined') ? cardType : cardValue;
+			cardValue = (args.npvalue != null) ? cardType : cardValue;
 		}
 		if (faceCard) {
 			if (args.bbb || args.buster || busterChainMod) {
