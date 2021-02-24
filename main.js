@@ -130,7 +130,7 @@ client.on('message', async function (message) {
 
 async function test (servantId, argStr, servantName) {
 
-	let args;
+	let args, warnMessage = '';
 
 	try {
 	args = arg({
@@ -221,10 +221,8 @@ async function test (servantId, argStr, servantName) {
 	}, {
 		argv: argStr.split(/\s+/g),
 	});} catch(err) {
-
-		if (err.code === 'ARG_UNKNOWN_OPTION') return err.message;
+		if (err.code === 'ARG_UNKNOWN_OPTION') warnMessage +=  err.message.split('--').join('') + '!\n';
 		else throw err;
-
 	}
 
 	for (const key of Object.keys(args)) {
@@ -234,7 +232,7 @@ async function test (servantId, argStr, servantName) {
 		delete args[key];
 	}
 
-	let servant, warnMessage = '';
+	let servant;
 
 	for (const key of Object.keys(servants)) {
 
