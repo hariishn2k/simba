@@ -220,6 +220,7 @@ async function test (servantId, argStr, servantName) {
 
 	}, {
 		argv: argStr.split(/\s+/g),
+		permissive: true
 	});} catch(err) {
 		if (err.code === 'ARG_UNKNOWN_OPTION') warnMessage +=  err.message.split('--').join('') + '!\n';
 		else throw err;
