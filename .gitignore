@@ -8,3 +8,4 @@ data.json
 package-lock.json
 skills-passive-text.json
 servant-list.js
+.env

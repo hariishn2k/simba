@@ -220,8 +220,12 @@ async function test (servantId, argStr, servantName) {
 
 	}, {
 		argv: argStr.split(/\s+/g),
-		permissive: true
-	});} catch(e) {console.log(e);return e;}
+	});} catch(err) {
+
+		if (err.code === 'ARG_UNKNOWN_OPTION') return err.message;
+		else throw err;
+
+	}
 
 	for (const key of Object.keys(args)) {
 		if (key !== '_') {
