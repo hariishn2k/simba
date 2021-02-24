@@ -57,7 +57,7 @@ client.on('message', async function (message) {
 		}
 	}
 	else if (command === 'help') {
-		reply = `		__Commands List:__
+		reply = `		__Argument List:__
 		**atkmod/a/atk**,
 		**npmod/n**,
 		**nplevel/np**,
@@ -222,9 +222,13 @@ async function test (servantId, argStr, servantName) {
 		argv: argStr.split(/\s+/g),
 		permissive: true
 	});} catch(err) {
-		if (err.code === 'ARG_UNKNOWN_OPTION') warnMessage +=  err.message.split('--').join('') + '!\n';
-		else throw err;
+		//if (err.code === 'ARG_UNKNOWN_OPTION') warnMessage +=  err.message.split('--').join('') + '!\n';
+		//else throw err;
+		console.log(err); return err;
 	}
+
+	console.log(args._);
+	warnMessage = (args['_'] == null) ? '' : `Unrecognised option: ${args['_'][0]}!\n`;
 
 	for (const key of Object.keys(args)) {
 		if (key !== '_') {
@@ -327,7 +331,7 @@ async function test (servantId, argStr, servantName) {
 		let busterChainMod = (args.bbb ? (0.2 * atk) : 0);
 		let firstCardBonus = 0;
 
-		if (args.defmod && (defMod < -100 || defMod > 100)) {
+		if (args.defmod && (defMod < -1 || defMod > 1)) {
 			warnMessage += 'Defense (de)buffs cannot exceed the range [-100%, 100%]. Setting enemy defense modifier to 0.\n';
 			defMod = 0;
 		}
