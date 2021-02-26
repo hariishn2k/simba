@@ -228,7 +228,7 @@ async function test (servantId, argStr, servantName) {
 	}
 
 	console.log(args._);
-	if (args._[0] !== '') warnMessage = `Unrecognised option: ${args['_'][0].split('--')[1].split('=')[0]}!\n`;
+	if (args._.indexOf('') !== 0) warnMessage = `Unrecognised option: ${args['_'][0].substring(2)}!\n`;
 
 	for (const key of Object.keys(args)) {
 		if (key !== '_') {
