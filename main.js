@@ -174,6 +174,7 @@ async function test (servantId, argStr, servantName) {
 		'--third'		:	Number,
 		'--extracardmodifier'	:	Number,
 		'--bbb'			:	Boolean,
+		'--brave'		:	Boolean,
 		'--verbose'		:	Boolean,
 
 		//Aliases
@@ -339,7 +340,7 @@ async function test (servantId, argStr, servantName) {
 		npMulti = f(args.npvalue ?? npMulti)/f(100);
 
 		let faceCard = (args.extra || args.buster || args.arts || args.quick) ? true : false;
-		let extraCardModifier = 2;
+		let extraCardModifier = 1;
 		let busterChainMod = (args.bbb ? (0.2 * atk) : 0);
 		let firstCardBonus = 0;
 
@@ -394,13 +395,16 @@ async function test (servantId, argStr, servantName) {
 
 		if (args.buster && !(args.second || args.third)) firstCardBonus = 0.5;
 
-		if (args.bbb) faceCard = true;
+		if (args.bbb || args.brave) faceCard = true;
 
 		if (args.bbb || args.busterfirst) {
 			firstCardBonus = 0.5;
 
 			if (args.bbb && args.extra) extraCardModifier = 3.5;
 		}
+
+		if (args.brave || args.extra) extraCardModifier = 2;
+		extraCardModifier = args.extracardmodifier ?? extraCardModifier;
 
 		firstCardBonus = faceCard ? firstCardBonus : 0;
 		npMulti = faceCard ? 1 : npMulti;
