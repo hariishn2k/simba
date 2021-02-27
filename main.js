@@ -61,7 +61,8 @@ client.on('message', async function (message) {
 		**atkmod/a/atk**,
 		**npmod/n**,
 		**nplevel/np**,
-		**npvalue/npv**
+		**npvalue/npv**,
+		**npgain/npgen/ng**,
 		**level/lvl/l**,
 		**cardmod/cm/m**,
 		**str**,
@@ -156,6 +157,7 @@ async function test (servantId, argStr, servantName) {
 		'--fou'			:	Number,
 		'--cardvalue'		:	Number,
 		'--npval'		:	Number,
+		'--npgain'		:	Number,
 		'--defmod'		:	[Number],
 		'--flatdamage'		:	[Number],
 		'--semod'		:	[Number],
@@ -183,6 +185,8 @@ async function test (servantId, argStr, servantName) {
 		'--npv'			:	'--npvalue',
 		'--lvl'			:	'--level',
 		'--l'			:	'--level',
+		'--npgen'		:	'--npgain',
+		'--ng'			:	'--npgain',
 		'--m'			:	'--cardmod',
 		'--c'			:	'--ce',
 		'--cm'			:	'--cardmod',
@@ -473,12 +477,12 @@ async function test (servantId, argStr, servantName) {
 			if (!('fields' in verboseEmbed)) verboseEmbed.fields = [];
 
 			newfields = [
-				{name: 'Base Attack', value: atk - args.fou - (args.ce ?? 0), inline: true},
-				{name: 'Fou Attack', value: args.fou, inline: true},
-				{name: 'Level', value: args.level, inline: true},
-				{name: 'Strengthen', value: args.str, inline: true},
-				{name: 'CE Attack', value: args.ce, inline: true},
-				{name: 'Class Attack Mod', value: `${servantClassRate}x`, inline: true},
+				{name: 'Base Attack', value: atk - (args.fou ?? 1000) - (args.ce ?? 0), inline: true},
+				{name: 'Fou Attack', value: (args.fou ?? 1000), inline: true},
+				{name: 'Level', value: (args.level ?? servant.lvMax), inline: true},
+				{name: 'Strengthen', value: !!np, inline: true},
+				{name: 'CE Attack', value: (args.ce ?? 0), inline: true},
+				{name: 'Class Attack Mod', value: `${+(classList[servant.className]/1000).toFixed(2)}x`, inline: true},
 				{name: 'Class Advantage', value: `${advantage}x`, inline: true},
 				{name: 'Card Attack Multiplier', value: `${cardValue}x`, inline: true},
 				{name: 'CardMod', value: `${cardMod*100}%`, inline: true},
@@ -500,7 +504,8 @@ async function test (servantId, argStr, servantName) {
 			newfields.push({name: 'Damage Reduction', value: `${specialDefMod*100}%`, inline: true});
 			newfields.push({name: 'Supereffective Mod', value: `${(1 + seMod)}x`, inline: true});
 			newfields.push({name: 'PowerMod', value: `${pMod*100}%`, inline: true});
-			newfields.push({name: 'Flat Damage', value: flatDamage, inline: true});
+			newfields.push({name: 'Flat Damage', value: (flatDamage ?? 0), inline: true});
+			newfields.push({name: 'NP Gain', value: `${(args.npgain ?? 0)}%`, inline: true});
 			verboseEmbed.fields = [...verboseEmbed.fields, ...newfields]
 			reply = [replyEmbed, verboseEmbed];
 		}
