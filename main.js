@@ -501,7 +501,7 @@ async function test (servantId, argStr, servantName) {
 			newfields.push({name: 'ATKMod', value: `${atkMod*100}%`, inline: true});
 			newfields.push({name: 'DEFMod', value: `${-defMod*100}%`, inline: true});
 			newfields.push({name: 'NP Mod', value: `${npMod*100}%`, inline: true});
-			newfields.push({name: 'Damage Reduction', value: `${specialDefMod*100}%`, inline: true});
+			//newfields.push({name: 'Damage Reduction', value: `${specialDefMod*100}%`, inline: true});
 			newfields.push({name: 'Supereffective Mod', value: `${(1 + seMod)}x`, inline: true});
 			newfields.push({name: 'PowerMod', value: `${pMod*100}%`, inline: true});
 			newfields.push({name: 'Flat Damage', value: (flatDamage ?? 0), inline: true});
