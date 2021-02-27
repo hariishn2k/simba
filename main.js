@@ -124,11 +124,12 @@ client.on('message', async function (message) {
 
 		if (Array.isArray(reply)) {
 
-			reply.forEach(message.channel.send);
+			message.channel.send({embed: reply[0]});
+			message.channel.send({embed: reply[1]});
 
 		}
 		else {
-			message.channel.send(reply);
+			message.channel.send({embed: reply});
 		}
 	}
 
@@ -334,7 +335,7 @@ async function test (servantId, argStr, servantName) {
 		npMulti = f(args.npvalue ?? npMulti)/f(100);
 
 		let faceCard = (args.extra || args.buster || args.arts || args.quick) ? true : false;
-		let extraCardModifier = 1;
+		let extraCardModifier = 2;
 		let busterChainMod = (args.bbb ? (0.2 * atk) : 0);
 		let firstCardBonus = 0;
 
@@ -394,11 +395,10 @@ async function test (servantId, argStr, servantName) {
 		if (args.bbb || args.busterfirst) {
 			firstCardBonus = 0.5;
 
-			if (args.extra) extraCardModifier = 3.5;
+			if (args.bbb && args.extra) extraCardModifier = 3.5;
 		}
 
 		firstCardBonus = faceCard ? firstCardBonus : 0;
-		firstCardBonus = args.extra ? 0 : firstCardBonus;
 		npMulti = faceCard ? 1 : npMulti;
 
 		switch (cardValue) {
@@ -461,6 +461,8 @@ async function test (servantId, argStr, servantName) {
 			});
 		}
 
+		let reply = replyEmbed;
+
 		if (args.verbose) {
 
 			const verboseEmbed = {
@@ -471,34 +473,39 @@ async function test (servantId, argStr, servantName) {
 			if (!('fields' in verboseEmbed)) verboseEmbed.fields = [];
 
 			newfields = [
-				{name: 'Base Attack', value: atk - (args.fou ?? 1000) - (args.ce ?? 0), inline: true},
-				{name: 'Fou Attack', value: (args.fou ?? 1000), inline: true},
+				{name: 'Base Attack', value: atk - args.fou - (args.ce ?? 0), inline: true},
+				{name: 'Fou Attack', value: args.fou, inline: true},
+				{name: 'Level', value: args.level, inline: true},
+				{name: 'Strengthen', value: args.str, inline: true},
+				{name: 'CE Attack', value: args.ce, inline: true},
 				{name: 'Class Attack Mod', value: `${servantClassRate}x`, inline: true},
 				{name: 'Class Advantage', value: `${advantage}x`, inline: true},
 				{name: 'Card Attack Multiplier', value: `${cardValue}x`, inline: true},
 				{name: 'CardMod', value: `${cardMod*100}%`, inline: true},
 				{name: 'Attribute Advantage', value: `${attributeAdvantage}x`, inline: true},
-				{name: 'NP Multiplier', value: `${npMulti*100}%`, inline: true},
+				{name: 'Damage %', value: `${npMulti*100}%`, inline: true},
 			];
 
-			if (faceCard === 'NP') {
+			/*if (faceCard === 'NP') {
 				newfields.push({name: 'np special attack', value: f(1 + seMod), inline: true});
 			} else {
 				newfields.push({name: 'first card bonus (included)', value: f(firstCardBonus), inline: true});
 				newfields.push({name: 'extra card modifier', value: f(extraCardModifier), inline: true});
 				newfields.push({name: 'buster chain damage plus', value: f(atk * (args.bbb ? 0.2 : 0)), inline: true});
-			}
+			}*/
 
-			newfields.push({name: 'ATKMod', value: `${atkMod}%`, inline: true});
-			newfields.push({name: 'DEFMod', value: `${-defMod}%`, inline: true});
-			newfields.push({name: 'Damage Reduction', value: specialDefMod, inline: true});
+			newfields.push({name: 'ATKMod', value: `${atkMod*100}%`, inline: true});
+			newfields.push({name: 'DEFMod', value: `${-defMod*100}%`, inline: true});
+			newfields.push({name: 'NP Mod', value: `${npMod*100}%`, inline: true});
+			newfields.push({name: 'Damage Reduction', value: `${specialDefMod*100}%`, inline: true});
 			newfields.push({name: 'Supereffective Mod', value: `${(1 + seMod)}x`, inline: true});
-			newfields.push({name: 'flat damage', value: f(flatDamage), inline: true});
+			newfields.push({name: 'PowerMod', value: `${pMod*100}%`, inline: true});
+			newfields.push({name: 'Flat Damage', value: flatDamage, inline: true});
 			verboseEmbed.fields = [...verboseEmbed.fields, ...newfields]
-
+			reply = [replyEmbed, verboseEmbed];
 		}
 
-		return {embed: replyEmbed};
+		return reply;
 
 	}
 }
