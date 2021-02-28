@@ -366,7 +366,7 @@ async function test (servantId, argStr, servantName) {
 		else if (args.extra) {cardType = 1; hits = servant.hitsDistribution['extra'];}
 		else hits = servant.noblePhantasms[np].npDistribution;
 
-		let isCrit = (faceCard && args.crit) || false;
+		let isCrit = (faceCard && args.critical) ? true : false;
 		let total = 0;
 		let cardValue = cardType;
 
@@ -423,6 +423,15 @@ async function test (servantId, argStr, servantName) {
 				cardMod += f(parseFloat(passiveSkills.cardmod?.buster ?? 0))/f(100);
 				break;
 		}
+
+
+
+
+
+		warnMessage += `critdamage: ${critDamage},\nisCrit: ${isCrit}\n`;
+
+
+
 
 		flatDamage += f(parseFloat(passiveSkills.flatdamage?.value ?? 0));
 		npGen += f(parseFloat(passiveSkills.npgen?.value ?? 0))/f(100);
