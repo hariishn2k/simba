@@ -169,9 +169,9 @@ async function test (servantId, argStr, servantName) {
 		'--buster'		:	Boolean,
 		'--critical'		:	Boolean,
 		'--busterfirst'		:	Boolean,
-		'--first'		:	Number,
-		'--second'		:	Number,
-		'--third'		:	Number,
+		'--first'		:	Boolean,
+		'--second'		:	Boolean,
+		'--third'		:	Boolean,
 		'--extracardmodifier'	:	Number,
 		'--bbb'			:	Boolean,
 		'--brave'		:	Boolean,
@@ -317,7 +317,7 @@ async function test (servantId, argStr, servantName) {
 		let atk = (args.level ? servant.atkGrowth[args.level - 1] : servant.atkMax) + (args.fou ?? 1000) + (args.ce ?? 0);
 		let advantage = f(classRelation[servant.className][enemyClass]/f(1000));
 		let cardMod = f(args.cardmod?.reduce((acc, val) => acc + val) ?? 0)/f(100);
-		let critDamage = f(args.critdamage?.reduce((acc, val) => acc + val) ?? 0)/f(100);
+		let critDamage = f(args.critdamage?.reduce((acc, val) => acc + val) ?? 100)/f(100);
 		let npLevel = (args.nplevel ?? 5) - 1;
 		let atkMod = f(args.atkmod?.reduce((acc, val) => acc + val) ?? 0)/f(100);
 		let defMod = f(args.defmod?.reduce((acc, val) => acc + val) ?? 0)/f(100);
