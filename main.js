@@ -317,7 +317,7 @@ async function test (servantId, argStr, servantName) {
 		let atk = (args.level ? servant.atkGrowth[args.level - 1] : servant.atkMax) + (args.fou ?? 1000) + (args.ce ?? 0);
 		let advantage = f(classRelation[servant.className][enemyClass]/f(1000));
 		let cardMod = f(args.cardmod?.reduce((acc, val) => acc + val) ?? 0)/f(100);
-		let critDamage = f(args.critdamage?.reduce((acc, val) => acc + val) ?? 100)/f(100);
+		let critDamage = f(args.critdamage?.reduce((acc, val) => acc + val) ?? 0)/f(100);
 		let npLevel = (args.nplevel ?? 5) - 1;
 		let atkMod = f(args.atkmod?.reduce((acc, val) => acc + val) ?? 0)/f(100);
 		let defMod = f(args.defmod?.reduce((acc, val) => acc + val) ?? 0)/f(100);
@@ -428,14 +428,14 @@ async function test (servantId, argStr, servantName) {
 		npGen += f(parseFloat(passiveSkills.npgen?.value ?? 0))/f(100);
 		npMod += f(parseFloat(passiveSkills.npmod?.value ?? 0))/f(100);
 
-		if (isCrit) pMod += critDamage;
+		if (isCrit && faceCard) pMod += critDamage;
 
 		if (pMod > 10) {
 			warnMessage += 'Powermod cannot go above 1000%, setting to 1000%\n';
 		}
 
-		let val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + cardMod), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * f(extraCardModifier)
-			* f(Math.max(f(1 + atkMod - defMod), 0)) * f(Math.max(f(1 - specialDefMod), 0)) * f(Math.max(f(1 + pMod + (npMod * +(!faceCard))), 0.001)) * f(1 + seMod)
+		let val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + cardMod), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * (1 + (+isCrit))
+			* f(extraCardModifier) * f(Math.max(f(1 + atkMod - defMod), 0)) * f(Math.max(f(1 - specialDefMod), 0)) * f(Math.max(f(1 + pMod + (npMod * +(!faceCard))), 0.001)) * f(1 + seMod)
 			+ f(flatDamage) + f(atk * (args.bbb ? 0.2 : 0));
 
 		for (const hit of hits.slice(0, hits.length - 1)) {
