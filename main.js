@@ -236,9 +236,8 @@ async function test (servantId, argStr, servantName) {
 		argv: argStr.split(/\s+/g),
 		permissive: true
 	});} catch(err) {
-		//if (err.code === 'ARG_UNKNOWN_OPTION') warnMessage +=  err.message.split('--').join('') + '!\n';
-		//else throw err;
-		console.log(err); return err;
+		if (err.code === 'ARG_UNKNOWN_OPTION') warnMessage +=  err.message.split('--').join('') + '!\n';
+		else return `${err}`.replace(/--/g, '');
 	}
 
 	if (args._.length > 0 && args._.indexOf('') !== 0) warnMessage = `Unrecognised option: ${args['_'][0].substring(2)}!\n`;
