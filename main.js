@@ -471,7 +471,7 @@ async function test (servantId, argStr, servantName) {
 			});
 		}
 
-		let reply = replyEmbed;
+		let reply = {embed: replyEmbed};
 
 		if (args.verbose) {
 
@@ -513,7 +513,8 @@ async function test (servantId, argStr, servantName) {
 			newfields.push({name: 'Flat Damage', value: (flatDamage ?? 0), inline: true});
 			newfields.push({name: 'NP Gain', value: `${(args.npgain ?? 0)}%`, inline: true});
 			verboseEmbed.fields = [...verboseEmbed.fields, ...newfields]
-			reply = [replyEmbed, verboseEmbed];
+			reply = [{embed: replyEmbed}, {embed: verboseEmbed}];
+
 		}
 
 		return reply;
