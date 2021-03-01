@@ -130,7 +130,7 @@ client.on('message', async function (message) {
 
 		}
 		else {
-			message.channel.send({embed: reply});
+			message.channel.send(reply);
 		}
 	}
 
