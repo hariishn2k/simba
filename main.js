@@ -324,8 +324,13 @@ async function test (servantId, argStr, servantName) {
 		let npMod = f(args.npmod?.reduce((acc, val) => acc + val) ?? 0)/f(100);
 		let attributeAdvantage = attributeRelation[servant.attribute][enemyAttribute]/f(1000);
 		let npMulti = 0;
-
 		let npFns = servant.noblePhantasms[np].functions;
+
+		if (npLevel > 4) {
+
+			warnMessage += "NP Level cannot be greater than 5, setting to 5 (default).\n";
+			npLevel = 4;
+		}
 
 		for (const npFn in npFns) {
 			if (npFns[npFn].funcType.includes('damageNp')) {
