@@ -330,6 +330,12 @@ async function test (servantId, argStr, servantName) {
 
 			warnMessage += "NP Level cannot be greater than 5, setting to 5 (default).\n";
 			npLevel = 4;
+
+		} else if (npLevel < 0) {
+
+			warnMessage += "NP Level cannot be lesser than 1, setting to 1.\n";
+			npLevel = 0;
+
 		}
 
 		for (const npFn in npFns) {
