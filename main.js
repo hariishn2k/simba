@@ -284,7 +284,7 @@ async function test (servantId, argStr, servantName) {
 
 		if (parseInt(servantId) <= parseInt(maxNAServant)) nps = Object.keys(NAServants[Object.keys(NAServants).find(x => ((NAServants[x].collectionNo === parseInt(servantId)) && ('noblePhantasms' in NAServants[x])))].noblePhantasms);
 
-		np = nps[nps.length - 1], cardType;
+		np = nps[nps.length - 1];
 
 		nps = Object.keys(servants[Object.keys(servants).find(x => ((servants[x].collectionNo === parseInt(servantId)) && 'noblePhantasms' in servants[x]))].noblePhantasms);
 
