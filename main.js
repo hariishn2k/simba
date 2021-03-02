@@ -291,10 +291,9 @@ async function test (servantId, argStr, servantName) {
 		if (parseInt(servantId) === 268) np = nps[1];
 
 		if (args.str != null) {
-			if (args.str > 0) np = nps[np.length - 1];
+			if (args.str > 0) np = nps[nps.length - 1];
 			else np = nps[0];
 		}
-
 
 		switch (servant.noblePhantasms[np].card) {
 			case "buster": cardType = 1.5; break;
@@ -480,8 +479,6 @@ async function test (servantId, argStr, servantName) {
 			},
 			description: `**${total.toLocaleString()}** (${(Math.floor(0.9 * (total - fD) + fD)).toLocaleString()} to ${Math.floor((1.099 * (total - fD) + fD)).toLocaleString()})`
 		};
-
-		warnMessage = `${np}\n${JSON.stringify(args)}`;
 
 		if (warnMessage) {
 
