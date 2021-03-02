@@ -508,7 +508,7 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Base Attack', value: atk - (args.fou ?? 1000) - (args.ce ?? 0), inline: true},
 				{name: 'Fou Attack', value: (args.fou ?? 1000), inline: true},
 				{name: 'Level', value: (args.level ?? servant.lvMax), inline: true},
-				{name: 'Strengthen', value: `${(!!np) ? emojis.find(e=>e.name==='nplewd') : emojis.find(e=>e.name==='nolewd')} ${!!np}`, inline: true},
+				{name: 'Strengthen', value: `${(!!+np) ? emojis.find(e=>e.name==='nplewd') : emojis.find(e=>e.name==='nolewd')} ${!!+np}`, inline: true},
 				{name: 'CE Attack', value: (args.ce ?? 0), inline: true},
 				{name: 'Class Attack Mod', value: `${emojis.find(e=>e.name===servant.className)} ${+(classList[servant.className]/1000).toFixed(2)}x`, inline: true},
 				{name: 'Class Advantage', value: `${advantage}x`, inline: true},
