@@ -288,12 +288,13 @@ async function test (servantId, argStr, servantName) {
 
 		nps = Object.keys(servants[Object.keys(servants).find(x => ((servants[x].collectionNo === parseInt(servantId)) && 'noblePhantasms' in servants[x]))].noblePhantasms);
 
+		if (parseInt(servantId) === 268) np = nps[1];
+
 		if (args.str != null) {
 			if (args.str > 0) np = nps[np.length - 1];
 			else np = nps[0];
 		}
 
-		if (parseInt(servantId) === 268) np = nps[1];
 
 		switch (servant.noblePhantasms[np].card) {
 			case "buster": cardType = 1.5; break;
