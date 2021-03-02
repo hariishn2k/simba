@@ -286,8 +286,11 @@ async function test (servantId, argStr, servantName) {
 
 		np = nps[nps.length - 1], cardType;
 
-		if (typeof args.str !== 'undefined') {
-			np = (args.str ? np : nps[0]);
+		nps = Object.keys(servants[Object.keys(servants).find(x => ((servants[x].collectionNo === parseInt(servantId)) && 'noblePhantasms' in servants[x]))].noblePhantasms);
+
+		if (args.str != null) {
+			if (args.str > 0) np = nps[np.length - 1];
+			else np = nps[0];
 		}
 
 		if (parseInt(servantId) === 268) np = nps[1];
@@ -477,6 +480,8 @@ async function test (servantId, argStr, servantName) {
 			description: `**${total.toLocaleString()}** (${(Math.floor(0.9 * (total - fD) + fD)).toLocaleString()} to ${Math.floor((1.099 * (total - fD) + fD)).toLocaleString()})`
 		};
 
+		warnMessage = `${np}\n${JSON.stringify(args)}`;
+
 		if (warnMessage) {
 
 			if (!('fields' in replyEmbed)) replyEmbed.fields = [];
@@ -504,12 +509,12 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Level', value: (args.level ?? servant.lvMax), inline: true},
 				{name: 'Strengthen', value: `${(!!np) ? emojis.find(e=>e.name==='nplewd') : emojis.find(e=>e.name==='nolewd')} ${!!np}`, inline: true},
 				{name: 'CE Attack', value: (args.ce ?? 0), inline: true},
-				{name: 'Class Attack Mod', value: `${emojis.find(e=>e.name==='servant.className')} ${+(classList[servant.className]/1000).toFixed(2)}x`, inline: true},
+				{name: 'Class Attack Mod', value: `${emojis.find(e=>e.name===servant.className)} ${+(classList[servant.className]/1000).toFixed(2)}x`, inline: true},
 				{name: 'Class Advantage', value: `${advantage}x`, inline: true},
 				{name: 'Card Attack Multiplier', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card) : emojis.find(e=>e.name===faceCard)} ${cardValue}x`, inline: true},
 				{name: 'CardMod', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card+'mod') : emojis.find(e=>e.name===faceCard+'mod')} ${cardMod*100}%`, inline: true},
 				{name: 'Attribute Advantage', value: `${attributeAdvantage}x`, inline: true},
-				{name: 'Damage %', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card) : emojis.find(e=>e.name===faceCard)} ${(faceCard ? cardValue : npMulti)*100}%`, inline: true},
+				{name: 'Damage %', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card) : emojis.find(e=>e.name===faceCard)} ${((faceCard !== 'NP') ? cardValue : npMulti)*100}%`, inline: true},
 			];
 
 			newfields.push({name: 'ATKMod', value: `${emojis.find(e=>e.name==='charisma')} ${atkMod*100}%`, inline: true});
