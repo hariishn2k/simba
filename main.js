@@ -125,8 +125,8 @@ client.on('message', async function (message) {
 
 		if (Array.isArray(reply)) {
 
-			message.channel.send({embed: reply[0]});
-			message.channel.send({embed: reply[1]});
+			message.channel.send(reply[0]);
+			message.channel.send(reply[1]);
 
 		}
 		else {
