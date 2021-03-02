@@ -22,8 +22,12 @@ const attributeRelation = require('./attribute-relation.json');
 const passiveSkillSet = require('./skills-passive.json');
 const maxNAServant = Math.max.apply(null, Object.keys(passiveSkillSet).filter(x => NAServants[x]), NAServants.map(s => s.collectionNo));
 
+let emojis;
 client.on('ready', () => {
+
 	console.info(`Logged in as ${client.user.tag}!`);
+	emojis = client.guilds.cache.get(`814828096074547240`).emojis.cache;
+
 });
 
 client.on('message', async function (message) {
@@ -258,6 +262,7 @@ async function test (servantId, argStr, servantName) {
 		else servant = servants[key];
 
 		servantName = servantName ?? servant.name;
+		servantName = servantName[0].toUpperCase() + servantName.slice(1);
 
 		if (args.npLevel > 4) {
 			warnMessage += 'NP Level cannot be greater than 5. Setting NP level to 5.\n';
@@ -464,7 +469,7 @@ async function test (servantId, argStr, servantName) {
 		fD = f(flatDamage) + f(atk * (args.bbb ? 0.2 : 0));
 
 		const replyEmbed = {
-			title: `${faceCard} damage for ${servantName}`,
+			title: `${faceCard} damage for ${emojis.find(e=>e.name===servant.className)} ${servantName}`,
 			thumbnail: {
 				url: servant.extraAssets.faces.ascension[Object.keys(servant.extraAssets.faces.ascension).length - 1]
 			},
@@ -486,7 +491,7 @@ async function test (servantId, argStr, servantName) {
 		if (args.verbose) {
 
 			const verboseEmbed = {
-				title: `${faceCard} damage for ${servantName} using:`
+				title: `${faceCard} damage for ${emojis.find(e=>e.name===servant.className)} ${servantName} using:`
 			};
 
 
@@ -496,8 +501,8 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Base Attack', value: atk - (args.fou ?? 1000) - (args.ce ?? 0), inline: true},
 				{name: 'Fou Attack', value: (args.fou ?? 1000), inline: true},
 				{name: 'Level', value: (args.level ?? servant.lvMax), inline: true},
-				{name: 'Strengthen', value: !!np, inline: true},
-				{name: 'CE Attack', value: (args.ce ?? 0), inline: true},
+				{name: 'Strengthen', value: `${!!np}`, inline: true},
+				{name: 'CE Attack', value: `${(args.ce ?? 0)}`, inline: true},
 				{name: 'Class Attack Mod', value: `${+(classList[servant.className]/1000).toFixed(2)}x`, inline: true},
 				{name: 'Class Advantage', value: `${advantage}x`, inline: true},
 				{name: 'Card Attack Multiplier', value: `${cardValue}x`, inline: true},
@@ -506,21 +511,12 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Damage %', value: `${npMulti*100}%`, inline: true},
 			];
 
-			/*if (faceCard === 'NP') {
-				newfields.push({name: 'np special attack', value: f(1 + seMod), inline: true});
-			} else {
-				newfields.push({name: 'first card bonus (included)', value: f(firstCardBonus), inline: true});
-				newfields.push({name: 'extra card modifier', value: f(extraCardModifier), inline: true});
-				newfields.push({name: 'buster chain damage plus', value: f(atk * (args.bbb ? 0.2 : 0)), inline: true});
-			}*/
-
 			newfields.push({name: 'ATKMod', value: `${atkMod*100}%`, inline: true});
 			newfields.push({name: 'DEFMod', value: `${-defMod*100}%`, inline: true});
 			newfields.push({name: 'NP Mod', value: `${npMod*100}%`, inline: true});
-			//newfields.push({name: 'Damage Reduction', value: `${specialDefMod*100}%`, inline: true});
 			newfields.push({name: 'Supereffective Mod', value: `${(1 + seMod)}x`, inline: true});
 			newfields.push({name: 'PowerMod', value: `${pMod*100}%`, inline: true});
-			newfields.push({name: 'Flat Damage', value: (flatDamage ?? 0), inline: true});
+			newfields.push({name: 'Flat Damage', value: `${(flatDamage ?? 0)}`, inline: true});
 			newfields.push({name: 'NP Gain', value: `${(args.npgain ?? 0)}%`, inline: true});
 			verboseEmbed.fields = [...verboseEmbed.fields, ...newfields]
 			reply = [{embed: replyEmbed}, {embed: verboseEmbed}];
