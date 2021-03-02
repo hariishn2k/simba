@@ -89,7 +89,7 @@ client.on('message', async function (message) {
 		**second**,
 		**third**,
 		**extracardmodifier/ecm**,
-		**bbb**`;
+		**bbb/busterChainMod**`;
 	}
 	else if (command === 'getnames') {
 		servant = restArgs[0];
@@ -205,6 +205,7 @@ async function test (servantId, argStr, servantName) {
 		'--sdm'			:	'--specialdefensemod',
 		'--crit'		:	'--critical',
 		'--bf'			:	'--busterfirst',
+		'--busterchainmod'	:	'--bbb',
 		'--ecm'			:	'--extracardmodifier',
 		'--man'			:	'--human',
 
@@ -501,25 +502,25 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Base Attack', value: atk - (args.fou ?? 1000) - (args.ce ?? 0), inline: true},
 				{name: 'Fou Attack', value: (args.fou ?? 1000), inline: true},
 				{name: 'Level', value: (args.level ?? servant.lvMax), inline: true},
-				{name: 'Strengthen', value: `${!!np}`, inline: true},
-				{name: 'CE Attack', value: `${(args.ce ?? 0)}`, inline: true},
-				{name: 'Class Attack Mod', value: `${+(classList[servant.className]/1000).toFixed(2)}x`, inline: true},
+				{name: 'Strengthen', value: `${(!!np) ? emojis.find(e=>e.name==='nplewd') : emojis.find(e=>e.name==='nolewd')} ${!!np}`, inline: true},
+				{name: 'CE Attack', value: (args.ce ?? 0), inline: true},
+				{name: 'Class Attack Mod', value: `${emojis.find(e=>e.name==='servant.className')} ${+(classList[servant.className]/1000).toFixed(2)}x`, inline: true},
 				{name: 'Class Advantage', value: `${advantage}x`, inline: true},
-				{name: 'Card Attack Multiplier', value: `${cardValue}x`, inline: true},
-				{name: 'CardMod', value: `${cardMod*100}%`, inline: true},
+				{name: 'Card Attack Multiplier', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card) : emojis.find(e=>e.name===faceCard)} ${cardValue}x`, inline: true},
+				{name: 'CardMod', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card+'mod') : emojis.find(e=>e.name===faceCard+'mod')} ${cardMod*100}%`, inline: true},
 				{name: 'Attribute Advantage', value: `${attributeAdvantage}x`, inline: true},
-				{name: 'Damage %', value: `${npMulti*100}%`, inline: true},
+				{name: 'Damage %', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card) : emojis.find(e=>e.name===faceCard)} ${(faceCard ? cardValue : npMulti)*100}%`, inline: true},
 			];
 
-			newfields.push({name: 'ATKMod', value: `${atkMod*100}%`, inline: true});
-			newfields.push({name: 'DEFMod', value: `${-defMod*100}%`, inline: true});
-			newfields.push({name: 'NP Mod', value: `${npMod*100}%`, inline: true});
-			newfields.push({name: 'Supereffective Mod', value: `${(1 + seMod)}x`, inline: true});
-			newfields.push({name: 'PowerMod', value: `${pMod*100}%`, inline: true});
-			newfields.push({name: 'Flat Damage', value: `${(flatDamage ?? 0)}`, inline: true});
-			newfields.push({name: 'NP Gain', value: `${(args.npgain ?? 0)}%`, inline: true});
+			newfields.push({name: 'ATKMod', value: `${emojis.find(e=>e.name==='charisma')} ${atkMod*100}%`, inline: true});
+			newfields.push({name: 'DEFMod', value: `${emojis.find(e=>e.name==='defup')} ${-defMod*100}%`, inline: true});
+			newfields.push({name: 'NP Mod', value: `${emojis.find(e=>e.name==='npmod')} ${npMod*100}%`, inline: true});
+			newfields.push({name: 'Supereffective Mod', value: `${emojis.find(e=>e.name==='overcharge')} ${(1 + seMod)}x`, inline: true});
+			newfields.push({name: 'PowerMod', value: `${emojis.find(e=>e.name==='pmod')}${emojis.find(e=>e.name==='crit')}  ${pMod*100}%`, inline: true});
+			newfields.push({name: 'Flat Damage', value: `${emojis.find(e=>e.name==='divinity')} ${(flatDamage ?? 0)}`, inline: true});
+			newfields.push({name: 'NP Gain', value: `${emojis.find(e=>e.name==='npgen')} ${(args.npgain ?? 0)}%`, inline: true});
 			verboseEmbed.fields = [...verboseEmbed.fields, ...newfields]
-			reply = [{embed: replyEmbed}, {embed: verboseEmbed}];
+			reply = [{embed: verboseEmbed}, {embed: replyEmbed}];
 
 		}
 
