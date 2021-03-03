@@ -127,6 +127,9 @@ client.on('message', async function (message) {
 			}
 		}
 	}
+	else if (command === 'starz') {
+		reply = '<https://fategrandorder.fandom.com/wiki/Wolfgang_Amadeus_Mozart>';
+	}
 
 	if (reply) {
 
