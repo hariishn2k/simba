@@ -61,7 +61,7 @@ client.on('message', async function (message) {
 		}
 	}
 	else if (command === 'help') {
-		reply = `		__Argument List:__
+		reply = `** **		__Argument List:__
 		**atkmod/a/atk**,
 		**npmod/n**,
 		**nplevel/np**,
@@ -89,6 +89,9 @@ client.on('message', async function (message) {
 		**second**,
 		**third**,
 		**extracardmodifier/ecm**,
+		**enemyservermod/esm/sm**,
+		**cardrefundvalue/crv**,
+		**enemyhp/hp**,
 		**bbb/busterChainMod**`;
 	}
 	else if (command === 'getnames') {
@@ -161,7 +164,7 @@ async function test (servantId, argStr, servantName) {
 		'--fou'			:	Number,
 		'--cardvalue'		:	Number,
 		'--npval'		:	Number,
-		'--npgain'		:	Number,
+		'--npgen'		:	Number,
 		'--defmod'		:	[Number],
 		'--flatdamage'		:	[Number],
 		'--semod'		:	[Number],
@@ -173,10 +176,14 @@ async function test (servantId, argStr, servantName) {
 		'--buster'		:	Boolean,
 		'--critical'		:	Boolean,
 		'--busterfirst'		:	Boolean,
+		'--artsfirst'		:	Boolean,
 		'--first'		:	Boolean,
 		'--second'		:	Boolean,
 		'--third'		:	Boolean,
 		'--extracardmodifier'	:	Number,
+		'--enemyservermod'	:	Number,
+		'--cardrefundvalue'	:	Number,
+		'--enemyhp'		:	Number,
 		'--bbb'			:	Boolean,
 		'--brave'		:	Boolean,
 		'--verbose'		:	Boolean,
@@ -190,9 +197,10 @@ async function test (servantId, argStr, servantName) {
 		'--npv'			:	'--npvalue',
 		'--lvl'			:	'--level',
 		'--l'			:	'--level',
-		'--npgen'		:	'--npgain',
-		'--ng'			:	'--npgain',
+		'--npgain'		:	'--npgen',
+		'--ng'			:	'--npgen',
 		'--m'			:	'--cardmod',
+		'--hp'			:	'--enemyhp',
 		'--c'			:	'--ce',
 		'--cm'			:	'--cardmod',
 		'--f'			:	'--fou',
@@ -206,6 +214,10 @@ async function test (servantId, argStr, servantName) {
 		'--crit'		:	'--critical',
 		'--bf'			:	'--busterfirst',
 		'--busterchainmod'	:	'--bbb',
+		'--cardrefundvalue'	:	'--bbb',
+		'--af'			:	'--artsfirst',
+		'--sm'			:	'--enemyservermod',
+		'--esm'			:	'--enemyservermod',
 		'--ecm'			:	'--extracardmodifier',
 		'--man'			:	'--human',
 
@@ -453,12 +465,22 @@ async function test (servantId, argStr, servantName) {
 			warnMessage += 'Powermod cannot go above 1000%, setting to 1000%\n';
 		}
 
-		let val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + cardMod), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * (1 + (+isCrit))
+		let val = 0, npregen = 0;
+
+		val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + cardMod), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * (1 + (+isCrit))
 			* f(extraCardModifier) * f(Math.max(f(1 + atkMod - defMod), 0)) * f(Math.max(f(1 - specialDefMod), 0)) * f(Math.max(f(1 + pMod + (npMod * +(!faceCard))), 0.001)) * f(1 + seMod)
-			+ f(flatDamage) + f(atk * (args.bbb ? 0.2 : 0));
+			+ f(flatDamage) + f((args.extra ?? 0) * atk * (args.bbb ? 0.2 : 0));
 
 		for (const hit of hits.slice(0, hits.length - 1)) {
+
 			total += val * f(f(hit)/f(100)); //add until second-to-last, then add the difference
+
+			if (args.enemyhp != null) {
+
+				let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel];
+
+			}
+
 		}
 
 		total += (val - total);
