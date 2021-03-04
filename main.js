@@ -48,11 +48,37 @@ client.on('message', async function (message) {
 
 		try {
 			[servant, argStr] = restArgs;
-			argStr = restArgs.slice(1).join(' ').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
-			servantId = (+servant === +servant) ? +servant : Object.keys(nicknames).find(id => nicknames[id].includes(servant));
 
-			if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
-			else reply = await test(servantId, argStr.toLowerCase(), servant);
+			if (argStr == undefined) {
+
+				reply = `** **	__Argument List:__
+		**atkmod/a/atk**:  atk up and down (put - in front of the down value)
+		**npmod/n**: np dmg up and down
+		**nplevel/np**: (defaults to np5)
+		**npgain/npgen/ng**: np generation up
+		**level/lvl/l**: level of servant (defaults to the servants max level)
+		**cardmod/cm/m**: quick/arts/buster performance up and down
+		**str**: used to see np strengh (1 for str, 0 for not; defaults to NA availability)
+		**ce/c**: ce attack stat (defaults to 0)
+		**fou/f**: fou attack stat (defaults to 1k attack fou)
+		**cardvalue/cmv**: to manually change the card type of a NP (only relevant for Astarte to give her np quick dmg value)
+		**npvalue/npv**: to manually input np scaling (relevant to put astarte's np as quick)
+		**defmod/d**: defense up and down
+		**flatdamage/fd**: flat dmg up (waver s3, Saberlot OC)
+		**semod/se**: overcharge np dmg increase (for Gilgamesh its 150 at oc1)
+		**pmod/p**: powermod vs specific traits (Jack OC, Raiko s3)
+		**specialdefensemod/sdm**: special defense up and down (Gawain's damage reduction in Camelot, for example)`;
+
+			}
+			else {
+
+				argStr = restArgs.slice(1).join(' ').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
+				servantId = (+servant === +servant) ? +servant : Object.keys(nicknames).find(id => nicknames[id].includes(servant));
+
+				if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
+				else reply = await test(servantId, argStr.toLowerCase(), servant);
+
+			}
 
 		}
 		catch (err) {
@@ -60,39 +86,16 @@ client.on('message', async function (message) {
 			reply = err;
 		}
 	}
-	else if (command === 'help') {
-		reply = `** **		__Argument List:__
-		**atkmod/a/atk**,
-		**npmod/n**,
-		**nplevel/np**,
-		**npvalue/npv**,
-		**npgain/npgen/ng**,
-		**level/lvl/l**,
-		**cardmod/cm/m**,
-		**str**,
-		**ce/c**,
-		**fou/f**,
-		**cardvalue/cmv**,
-		**npval/npv**,
-		**defmod/d**,
-		**flatdamage/fd**,
-		**semod/se**,
-		**pmod/p**,
-		**specialdefensemod/sdm**,
-		**critdamage**,
-		**arts**,
-		**quick**,
-		**buster**,
-		**critical/crit**,
-		**busterfirst/bf**,
-		**first**,
-		**second**,
-		**third**,
-		**extracardmodifier/ecm**,
-		**enemyservermod/esm/sm**,
-		**cardrefundvalue/crv**,
-		**enemyhp/hp**,
-		**bbb/busterChainMod**`;
+	else if (command === 'cards') {
+		reply = `** **	__Argument List:__
+		**critdamage**: critdamage buffs
+		**arts/buster/quick**: the calculation will give out the values for an arts/buster/quick card (overrides np calculation)
+		**critical/crit**: use for when your face card crits
+		**busterfirst/bf**: first card buster bonus
+		**artsfirst/af**: first card arts bonus
+		**first/second/third**: position of your face card in a chain
+		**extracardmodifier/ecm**: used for the extra attack (2 for normal brave chain, 3,5 for QQQ/AAA/BBB)
+		**bbb/busterchainmod**: buster brave chain dmg bonus`;
 	}
 	else if (command === 'getnames') {
 		servant = restArgs[0];
@@ -183,6 +186,7 @@ async function test (servantId, argStr, servantName) {
 		'--first'		:	Boolean,
 		'--second'		:	Boolean,
 		'--third'		:	Boolean,
+		'--extra'		:	Boolean,
 		'--extracardmodifier'	:	Number,
 		'--enemyservermod'	:	Number,
 		'--cardrefundvalue'	:	Number,
@@ -198,6 +202,7 @@ async function test (servantId, argStr, servantName) {
 		'--n'			:	'--npmod',
 		'--np'			:	'--nplevel',
 		'--npv'			:	'--npvalue',
+		'--npval'		:	'--npvalue',
 		'--lvl'			:	'--level',
 		'--l'			:	'--level',
 		'--npgain'		:	'--npgen',
@@ -217,10 +222,11 @@ async function test (servantId, argStr, servantName) {
 		'--crit'		:	'--critical',
 		'--bf'			:	'--busterfirst',
 		'--busterchainmod'	:	'--bbb',
-		'--cardrefundvalue'	:	'--bbb',
+		'--crv'			:	'--cardrefundvalue',
 		'--af'			:	'--artsfirst',
 		'--sm'			:	'--enemyservermod',
 		'--esm'			:	'--enemyservermod',
+		'--sm'			:	'--enemyservermod',
 		'--ecm'			:	'--extracardmodifier',
 		'--man'			:	'--human',
 
@@ -437,7 +443,7 @@ async function test (servantId, argStr, servantName) {
 			if (args.bbb && args.extra) extraCardModifier = 3.5;
 		}
 
-		if (args.brave || args.extra) extraCardModifier = 2;
+		if (args.brave && args.extra) extraCardModifier = 2;
 		extraCardModifier = args.extracardmodifier ?? extraCardModifier;
 
 		firstCardBonus = faceCard ? firstCardBonus : 0;
@@ -468,11 +474,11 @@ async function test (servantId, argStr, servantName) {
 			warnMessage += 'Powermod cannot go above 1000%, setting to 1000%\n';
 		}
 
-		let val = 0, npregen = 0;
+		let val = 0, npregen = 0, enemyhp = 0;
 
 		val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + cardMod), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * (1 + (+isCrit))
 			* f(extraCardModifier) * f(Math.max(f(1 + atkMod - defMod), 0)) * f(Math.max(f(1 - specialDefMod), 0)) * f(Math.max(f(1 + pMod + (npMod * +(!faceCard))), 0.001)) * f(1 + seMod)
-			+ f(flatDamage) + f((args.extra ?? 0) * atk * (args.bbb ? 0.2 : 0));
+			+ f(flatDamage) + f((args.extra ? 0 : 1) * atk * (args.bbb ? 0.2 : 0));
 
 		for (const hit of hits.slice(0, hits.length - 1)) {
 
@@ -480,7 +486,17 @@ async function test (servantId, argStr, servantName) {
 
 			if (args.enemyhp != null) {
 
-				let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel];
+				enemyhp = f(args.enemyhp);
+
+				let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel]/100;
+				let cardNpValue = 0,enemyServerMod = 0;
+
+				if (args.arts) cardNpValue = 3;
+				else if (args.quick) cardNpValue = 1.5;
+				else if (args.buster || args.bbb) cardNpValue = 0;
+				else if (args.extra) cardNpValue = 1;
+
+				return f(servantNpGain) * f(f(cardNpValue) * f(1 + cardMod)) * f(enemyServerMod);
 
 			}
 
