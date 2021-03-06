@@ -33,6 +33,7 @@ client.on('ready', () => {
 client.on('message', async function (message) {
 
 	if (message.author.bot) return;
+
 	if (!message.content.startsWith(prefix)) return;
 
 	let commandBody = message.content.slice(prefix.length), reply, command, restArgs;
@@ -133,6 +134,12 @@ client.on('message', async function (message) {
 	else if (command === 'starz') {
 		reply = '<https://fategrandorder.fandom.com/wiki/Wolfgang_Amadeus_Mozart>';
 	}
+	else if (command === 'math') {
+		reply = `${calculate(parseCalculationString(restArgs.join('')))}`;
+	}
+	else if (command === 'refund') {
+		reply = `https://discord.gg/TKJmuCR`;
+	}
 
 	if (reply) {
 
@@ -170,7 +177,7 @@ async function test (servantId, argStr, servantName) {
 		'--fou'			:	Number,
 		'--cardvalue'		:	Number,
 		'--npval'		:	Number,
-		'--npgen'		:	Number,
+		'--npgen'		:	[Number],
 		'--defmod'		:	[Number],
 		'--flatdamage'		:	[Number],
 		'--semod'		:	[Number],
@@ -474,11 +481,17 @@ async function test (servantId, argStr, servantName) {
 			warnMessage += 'Powermod cannot go above 1000%, setting to 1000%\n';
 		}
 
-		let val = 0, npregen = 0, enemyhp = 0;
+		let val = 0, npregen = 0, enemyhp = 0, npRefunded = 0;
 
 		val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + cardMod), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * (1 + (+isCrit))
 			* f(extraCardModifier) * f(Math.max(f(1 + atkMod - defMod), 0)) * f(Math.max(f(1 - specialDefMod), 0)) * f(Math.max(f(1 + pMod + (npMod * +(!faceCard))), 0.001)) * f(1 + seMod)
 			+ f(flatDamage) + f((args.extra ? 0 : 1) * atk * (args.bbb ? 0.2 : 0));
+
+		if (args.arts) faceCard = 'Arts';
+		else if (args.quick) faceCard = 'Quick';
+		else if (args.extra) faceCard = 'Extra';
+		else if (args.buster || args.bbb) faceCard = 'Buster';
+		else faceCard = 'NP';
 
 		for (const hit of hits.slice(0, hits.length - 1)) {
 
@@ -488,15 +501,30 @@ async function test (servantId, argStr, servantName) {
 
 				enemyhp = f(args.enemyhp);
 
-				let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel]/100;
+				let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel];
 				let cardNpValue = 0,enemyServerMod = 0;
 
-				if (args.arts) cardNpValue = 3;
-				else if (args.quick) cardNpValue = 1.5;
-				else if (args.buster || args.bbb) cardNpValue = 0;
-				else if (args.extra) cardNpValue = 1;
+				switch (`${(faceCard === 'NP') ? servant.noblePhantasms[np].card : faceCard.toLowerCase()}`) {
+					case 'arts': cardNpValue = 3; break;
+					case 'quick': cardNpValue = 1.5; break;
+					case 'buster': cardNpValue = 0; break;
+					case 'extra': cardNpValue = 1; break;
+					default: cardValue = 1; break;
+				}
 
-				return f(servantNpGain) * f(f(cardNpValue) * f(1 + cardMod)) * f(enemyServerMod);
+				switch (enemyClass) {
+					case 'rider': enemyServerMod = 1.1; break;
+					case 'caster': enemyServerMod = 1.2; break;
+					case 'assasin': enemyServerMod = 0.9; break;
+					case 'berserker': enemyServerMod = 0.8; break;
+					case 'mooncancer': enemyServerMod = 1.2; break;
+					default: enemyServerMod = 1; break;
+				}
+
+				enemyServerMod = args.enemyservermod ?? enemyServerMod;
+
+				return Math.floor(f(servantNpGain) * f(f((args.artsfirst && faceCard !== 'NP') ? 1 : 0) +  f(f(cardNpValue) * f(1 + cardMod)))
+					* f(enemyServerMod) * f(1 + npGen) * (1 + (+isCrit)));
 
 			}
 
@@ -504,12 +532,6 @@ async function test (servantId, argStr, servantName) {
 
 		total += (val - total);
 		total = Math.floor(total);
-
-		if (args.arts) faceCard = 'arts';
-		else if (args.quick) faceCard = 'quick';
-		else if (args.extra) faceCard = 'extra';
-		else if (args.buster || args.bbb) faceCard = 'buster';
-		else faceCard = 'NP';
 
 		fD = f(flatDamage) + f(atk * (args.bbb ? 0.2 : 0));
 
@@ -572,5 +594,58 @@ async function test (servantId, argStr, servantName) {
 
 	}
 }
+
+function parseCalculationString(s) {
+    // --- Parse a calculation string into an array of numbers and operators
+    var calculation = [],
+        current = '';
+    for (var i = 0, ch; ch = s.charAt(i); i++) {
+        if ('^*/+-'.indexOf(ch) > -1) {
+            if (current == '' && ch == '-') {
+                current = '-';
+            } else {
+                calculation.push(parseFloat(current), ch);
+                current = '';
+            }
+        } else {
+            current += s.charAt(i);
+        }
+    }
+    if (current != '') {
+        calculation.push(parseFloat(current));
+    }
+    return calculation;
+}
+
+function calculate(calc) {
+    // --- Perform a calculation expressed as an array of operators and numbers
+    var ops = [{'^': (a, b) => Math.pow(a, b)},
+               {'*': (a, b) => a * b, '/': (a, b) => a / b},
+               {'+': (a, b) => a + b, '-': (a, b) => a - b}],
+        newCalc = [],
+        currentOp;
+    for (var i = 0; i < ops.length; i++) {
+        for (var j = 0; j < calc.length; j++) {
+            if (ops[i][calc[j]]) {
+                currentOp = ops[i][calc[j]];
+            } else if (currentOp) {
+                newCalc[newCalc.length - 1] = 
+                    currentOp(newCalc[newCalc.length - 1], calc[j]);
+                currentOp = null;
+            } else {
+                newCalc.push(calc[j]);
+            }
+        }
+        calc = newCalc;
+        newCalc = [];
+    }
+    if (calc.length > 1) {
+        console.log('Error: unable to resolve calculation: ' + calc);
+        return calc;
+    } else {
+        return calc[0];
+    }
+}
+
 
 client.login(config.BOT_TOKEN);
