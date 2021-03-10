@@ -547,8 +547,8 @@ async function test (servantId, argStr, servantName) {
 				baseNPGain = f(servantNpGain) * f(f((artsFirst && faceCard !== 'NP') ? 1 : 0) +  f(f(cardNpValue) * f(1 + cardMod)))
 						* f(enemyServerMod) * f(1 + npGen);
 
-				minNPRgen += (Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isOverkill)/2)) / 100).toFixed(2);
-				maxNPRegen += (Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + (+((enemyHp - thisHitMaxDamage) < 0)))/2)) / 100).toFixed(2);
+				minNPRgen += +(Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isOverkill)/2)) / 100).toFixed(2);
+				maxNPRegen += +(Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + (+((enemyHp - thisHitMaxDamage) < 0)))/2)) / 100).toFixed(2);
 				enemyHPArray.push(Math.floor(enemyHp));
 
 				descriptionString += `**hit ${i+1} =** ${thisHitMinDamage} (${hit}%) | enemyHp = ${Math.floor(enemyHp)} | total np gained = **${minNPRgen}%**\n`;
