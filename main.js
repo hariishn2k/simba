@@ -514,7 +514,7 @@ async function test (servantId, argStr, servantName) {
 
 			switch (`${(faceCard === 'NP') ? servant.noblePhantasms[np].card : faceCard.toLowerCase()}`) {
 				case 'arts': cardNpValue = 3; break;
-				case 'quick': cardNpValue = 1.5; break;
+				case 'quick': cardNpValue = 1; break;
 				case 'buster': cardNpValue = 0; break;
 				case 'extra': cardNpValue = 1; break;
 				default: cardValue = 1; break;
@@ -551,7 +551,7 @@ async function test (servantId, argStr, servantName) {
 				maxNPRegen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + (+((enemyHp - thisHitMaxDamage) < 0)))/2)) / 100;
 				enemyHPArray.push(Math.floor(enemyHp));
 
-				descriptionString += `**hit ${i+1} =** ${thisHitMinDamage} (${hit}%) | enemyHp = ${Math.floor(enemyHp)} | total np gained = **${minNPRgen}%**\n`;
+				descriptionString += `**hit ${i+1} =** ${thisHitMinDamage} (${hit}%) | enemyHp = ${Math.floor(enemyHp)} | total np gained = **${minNPRgen.toFixed(1)}%**\n`;
 
 			}
 
