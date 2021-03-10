@@ -507,10 +507,10 @@ async function test (servantId, argStr, servantName) {
 
 		if (args.enemyhp != null) {
 
-			let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel], minNPRgen = 0, maxNPRegen = 0, enemyHp = (args.enemyhp ?? 0);
+			let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel], minNPRgen = 0, maxNPRegen = 0, enemyHp = (args.enemyhp ?? 0), maxrollEnemyHp = (args.enemyhp ?? 0);
 			let npGainPerHit = [], enemyHPArray = [], hitsArray = [], npGenFields = [], descriptionString = '';
 			let cardNpValue = 0,enemyServerMod = 0, artsFirst = (args.artsfirst) ? 1 : 0;
-			let isOverkill = 0, baseNPGain = 0, minrollTotalVal = 0.9 * f(total - fD) + fD, maxrollTotalVal = 1.099 * f(total - fD) + fD, overkillNo = 0;
+			let isOverkill = 0, isMaxOverkill = 0, baseNPGain = 0, minrollTotalVal = 0.9 * f(total - fD) + fD, maxrollTotalVal = 1.099 * f(total - fD) + fD, overkillNo = 0, maxOverkillNo = 0;
 
 			switch (`${(faceCard === 'NP') ? servant.noblePhantasms[np].card : faceCard.toLowerCase()}`) {
 				case 'arts': cardNpValue = 3; break;
@@ -541,14 +541,17 @@ async function test (servantId, argStr, servantName) {
 
 				hitsArray.push(thisHitMinDamage);
 				enemyHp -= thisHitMinDamage;
+				maxrollEnemyHp -= thisHitMaxDamage;
 				isOverkill = +(enemyHp < 0);
+				isMaxOverkill = +(maxrollEnemyHp < 0);
 				overkillNo += isOverkill;
+				maxOverkillNo += isMaxOverkill;
 
 				baseNPGain = f(servantNpGain) * f(f((artsFirst && faceCard !== 'NP') ? 1 : 0) +  f(f(cardNpValue) * f(1 + cardMod)))
 						* f(enemyServerMod) * f(1 + npGen);
 
 				minNPRgen += +(Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isOverkill)/2)) / 100).toFixed(2);
-				maxNPRegen += +(Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + (+((enemyHp - thisHitMaxDamage) > 0)))/2)) / 100).toFixed(2);
+				maxNPRegen += +(Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + (+((maxrollEnemyHp - thisHitMaxDamage) > 0)))/2)) / 100).toFixed(2);
 				enemyHPArray.push(Math.floor(enemyHp));
 
 				descriptionString += `**hit ${i+1} =** ${thisHitMinDamage} (${hit}%) | enemyHp = ${Math.floor(enemyHp)} | total np gained = **${minNPRgen}%**\n`;
@@ -556,7 +559,7 @@ async function test (servantId, argStr, servantName) {
 			}
 
 			descriptionString += `Total minroll refund: **${minNPRgen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)\n`;
-			descriptionString += `Total maxroll refund: **${maxNPRegen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)`;
+			descriptionString += `Total maxroll refund: **${maxNPRegen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${maxOverkillNo} overkill hits)`;
 
 			//return `[${npGainPerHit}]\n[${enemyHPArray}]`;
 
@@ -567,7 +570,7 @@ async function test (servantId, argStr, servantName) {
 		}
 
 		const replyEmbed = {
-			title: `${faceCard} damage for ${emojis.find(e=>e.name===servant.className)} ${servantName}`,
+			title: `${faceCard} damage for ${emojis.find(e=>e.name===servant.className.toLowerCase())} ${servantName}`,
 			thumbnail: {
 				url: servant.extraAssets.faces.ascension[Object.keys(servant.extraAssets.faces.ascension).length - 1]
 			},
@@ -591,7 +594,7 @@ async function test (servantId, argStr, servantName) {
 		if (args.verbose) {
 
 			const verboseEmbed = {
-				title: `${faceCard} damage for ${emojis.find(e=>e.name===servant.className)} ${servantName} using:`
+				title: `${faceCard} damage for ${emojis.find(e=>e.name===servant.className.toLowerCase())} ${servantName} using:`
 			};
 
 
