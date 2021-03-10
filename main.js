@@ -555,8 +555,8 @@ async function test (servantId, argStr, servantName) {
 
 			}
 
-			descriptionString += `Total minroll refund: **${minNPRgen}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)\n`;
-			descriptionString += `Total maxroll refund: **${maxNPRegen}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)`;
+			descriptionString += `Total minroll refund: **${minNPRgen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)\n`;
+			descriptionString += `Total maxroll refund: **${maxNPRegen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)`;
 
 			//return `[${npGainPerHit}]\n[${enemyHPArray}]`;
 
