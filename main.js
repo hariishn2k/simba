@@ -50,7 +50,7 @@ client.on('message', async function (message) {
 		try {
 			[servant, argStr] = restArgs;
 
-			if (argStr == undefined) {
+			if (servant == undefined) {
 
 				reply = `** **	__Argument List:__
 		**atkmod/a/atk**:  atk up and down (put - in front of the down value)
@@ -145,8 +145,8 @@ client.on('message', async function (message) {
 
 		if (Array.isArray(reply)) {
 
-			message.channel.send(reply[0]);
-			message.channel.send(reply[1]);
+			for (let i = 0; i < reply.length; i++)
+				message.channel.send(reply[i]);
 
 		}
 		else {
@@ -382,14 +382,14 @@ async function test (servantId, argStr, servantName) {
 			}
 		}
 
-		if (npMulti === 0) return `**${servantName}** NP does not deal damage!`;
-
 		npMulti = f(args.npvalue ?? npMulti)/f(100);
 
 		let faceCard = (args.extra || args.buster || args.arts || args.quick) ? true : false;
 		let extraCardModifier = 1;
 		let busterChainMod = (args.bbb ? (0.2 * atk) : 0);
 		let firstCardBonus = 0;
+
+		if (npMulti === 0 && !faceCard) return `**${servantName}** NP does not deal damage!`;
 
 		if (args.defmod && (defMod < -1 || defMod > 1)) {
 			warnMessage += 'Defense (de)buffs cannot exceed the range [-100%, 100%]. Setting enemy defense modifier to 0.\n';
@@ -406,7 +406,6 @@ async function test (servantId, argStr, servantName) {
 		if (enemyClass === 'ruler' && servantId === '167') {
 			pMod += 0.5;
 		}
-
 		if (args.buster) {cardType = 1.5; hits = servant.hitsDistribution['buster'];}
 		else if (args.arts) {cardType = 1; hits = servant.hitsDistribution['arts'];}
 		else if (args.quick) {cardType = 0.8; hits = servant.hitsDistribution['quick'];}
@@ -479,13 +478,15 @@ async function test (servantId, argStr, servantName) {
 
 		if (pMod > 10) {
 			warnMessage += 'Powermod cannot go above 1000%, setting to 1000%\n';
+			pMod = 10;
 		}
 
-		let val = 0, npregen = 0, enemyhp = 0, npRefunded = 0;
+		let val = 0;
+		let fD = f(flatDamage) + f((args.extra ? 0 : 1) * atk * (args.bbb ? 0.2 : 0));
+		let npGainEmbed = null;
 
 		val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + cardMod), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * (1 + (+isCrit))
-			* f(extraCardModifier) * f(Math.max(f(1 + atkMod - defMod), 0)) * f(Math.max(f(1 - specialDefMod), 0)) * f(Math.max(f(1 + pMod + (npMod * +(!faceCard))), 0.001)) * f(1 + seMod)
-			+ f(flatDamage) + f((args.extra ? 0 : 1) * atk * (args.bbb ? 0.2 : 0));
+			* f(extraCardModifier) * f(Math.max(f(1 + atkMod - defMod), 0)) * f(Math.max(f(1 - specialDefMod), 0)) * f(Math.max(f(1 + pMod + (npMod * +(!faceCard))), 0.001)) * f(1 + seMod) + fD;
 
 		if (args.arts) faceCard = 'Arts';
 		else if (args.quick) faceCard = 'Quick';
@@ -493,47 +494,77 @@ async function test (servantId, argStr, servantName) {
 		else if (args.buster || args.bbb) faceCard = 'Buster';
 		else faceCard = 'NP';
 
+		minrollTotalVal = 0.9 * (val - fD) + fD;
+
 		for (const hit of hits.slice(0, hits.length - 1)) {
 
 			total += val * f(f(hit)/f(100)); //add until second-to-last, then add the difference
-
-			if (args.enemyhp != null) {
-
-				enemyhp = f(args.enemyhp);
-
-				let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel];
-				let cardNpValue = 0,enemyServerMod = 0;
-
-				switch (`${(faceCard === 'NP') ? servant.noblePhantasms[np].card : faceCard.toLowerCase()}`) {
-					case 'arts': cardNpValue = 3; break;
-					case 'quick': cardNpValue = 1.5; break;
-					case 'buster': cardNpValue = 0; break;
-					case 'extra': cardNpValue = 1; break;
-					default: cardValue = 1; break;
-				}
-
-				switch (enemyClass) {
-					case 'rider': enemyServerMod = 1.1; break;
-					case 'caster': enemyServerMod = 1.2; break;
-					case 'assasin': enemyServerMod = 0.9; break;
-					case 'berserker': enemyServerMod = 0.8; break;
-					case 'mooncancer': enemyServerMod = 1.2; break;
-					default: enemyServerMod = 1; break;
-				}
-
-				enemyServerMod = args.enemyservermod ?? enemyServerMod;
-
-				return Math.floor(f(servantNpGain) * f(f((args.artsfirst && faceCard !== 'NP') ? 1 : 0) +  f(f(cardNpValue) * f(1 + cardMod)))
-					* f(enemyServerMod) * f(1 + npGen) * (1 + (+isCrit)));
-
-			}
 
 		}
 
 		total += (val - total);
 		total = Math.floor(total);
 
-		fD = f(flatDamage) + f(atk * (args.bbb ? 0.2 : 0));
+		if (args.enemyhp != null) {
+
+			let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel], minNPRgen = 0, maxNPRegen = 0, enemyHp = (args.enemyhp ?? 0);
+			let npGainPerHit = [], enemyHPArray = [], hitsArray = [], npGenFields = [], descriptionString = '';
+			let cardNpValue = 0,enemyServerMod = 0, artsFirst = (args.artsfirst) ? 1 : 0;
+			let isOverkill = 0, baseNPGain = 0, minrollTotalVal = 0.9 * f(total - fD) + fD, maxrollTotalVal = 1.099 * f(total - fD) + fD, overkillNo = 0;
+
+			switch (`${(faceCard === 'NP') ? servant.noblePhantasms[np].card : faceCard.toLowerCase()}`) {
+				case 'arts': cardNpValue = 3; break;
+				case 'quick': cardNpValue = 1.5; break;
+				case 'buster': cardNpValue = 0; break;
+				case 'extra': cardNpValue = 1; break;
+				default: cardValue = 1; break;
+			}
+
+			switch (enemyClass) {
+				case 'rider': enemyServerMod = 1.1; break;
+				case 'caster': enemyServerMod = 1.2; break;
+				case 'assasin': enemyServerMod = 0.9; break;
+				case 'berserker': enemyServerMod = 0.8; break;
+				case 'mooncancer': enemyServerMod = 1.2; break;
+				default: enemyServerMod = 1; break;
+			}
+
+			if ((args.arts &&  !(args.second || args.third)) || args.artsfirst) artsFirst = 1;
+
+			enemyServerMod = args.enemyservermod ?? enemyServerMod;
+
+			descriptionString = `np gain: ${servantNpGain/100}, artsFirst: ${artsFirst}, cardRefundValue: ${cardNpValue}, cardmod: ${cardMod}, enemyServerMod: ${enemyServerMod}, npGainMod: ${npGen}, critical: ${isCrit}\n`;
+
+			for (let i = 0; i < hits.length; i++) {
+
+				let hit = hits[i], thisHitMinDamage = f(minrollTotalVal * f(hit) / f(100)), thisHitMaxDamage = Math.floor(f(maxrollTotalVal * f(hit) / f(100)));
+
+				hitsArray.push(thisHitMinDamage);
+				enemyHp -= thisHitMinDamage;
+				isOverkill = +(enemyHp < 0);
+				overkillNo += isOverkill;
+
+				baseNPGain = f(servantNpGain) * f(f((artsFirst && faceCard !== 'NP') ? 1 : 0) +  f(f(cardNpValue) * f(1 + cardMod)))
+						* f(enemyServerMod) * f(1 + npGen);
+
+				minNPRgen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isOverkill)/2)) / 100;
+				maxNPRegen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + (+((enemyHp - thisHitMaxDamage) < 0)))/2)) / 100;
+				enemyHPArray.push(Math.floor(enemyHp));
+
+				descriptionString += `**hit ${i+1} =** ${thisHitMinDamage} (${hit}%) | enemyHp = ${Math.floor(enemyHp)} | total np gained = **${minNPRgen}%**\n`;
+
+			}
+
+			descriptionString += `Total minroll refund: **${minNPRgen}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)\n`;
+			descriptionString += `Total maxroll refund: **${maxNPRegen}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)`;
+
+			//return `[${npGainPerHit}]\n[${enemyHPArray}]`;
+
+			npGainEmbed = {
+				title: 'NP Gain:',
+				description: descriptionString
+			};
+		}
 
 		const replyEmbed = {
 			title: `${faceCard} damage for ${emojis.find(e=>e.name===servant.className)} ${servantName}`,
@@ -554,6 +585,8 @@ async function test (servantId, argStr, servantName) {
 		}
 
 		let reply = {embed: replyEmbed};
+
+		if (args.enemyhp != undefined) reply = [{embed: replyEmbed}, {embed: npGainEmbed}];
 
 		if (args.verbose) {
 
