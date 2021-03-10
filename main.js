@@ -554,7 +554,7 @@ async function test (servantId, argStr, servantName) {
 				maxNPRegen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isMaxOverkill)/2)) / 100;
 				enemyHPArray.push(Math.floor(enemyHp));
 
-				descriptionString += `**hit ${i+1} =** ${thisHitMinDamage} (${hit}%) | enemyHp = ${Math.floor(enemyHp)} | total np gained = **${minNPRgen.toFixed(2}%**\n`;
+				descriptionString += `**hit ${i+1} =** ${thisHitMinDamage} (${hit}%) | enemyHp = ${Math.floor(enemyHp)} | total np gained = **${minNPRgen.toFixed(2)}%**\n`;
 
 			}
 
