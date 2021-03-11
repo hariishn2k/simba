@@ -471,7 +471,7 @@ async function test (servantId, argStr, servantName) {
 		}
 
 		flatDamage += f(parseFloat(passiveSkills.flatdamage?.value ?? 0));
-		npGen += f(parseFloat(passiveSkills.npgen?.value ?? 0))/f(100);
+		npGen += f(parseFloat(passiveSkills.npgen?.value ?? 0))/f(100); return `${npGen}`;
 		npMod += f(parseFloat(passiveSkills.npmod?.value ?? 0))/f(100);
 
 		if (isCrit && faceCard) pMod += critDamage;
