@@ -68,12 +68,13 @@ client.on('message', async function (message) {
 		**flatdamage/fd**: flat dmg up (waver s3, Saberlot OC)
 		**semod/se**: overcharge np dmg increase (for Gilgamesh its 150 at oc1)
 		**pmod/p**: powermod vs specific traits (Jack OC, Raiko s3)
-		**specialdefensemod/sdm**: special defense up and down (Gawain's damage reduction in Camelot, for example)`;
+		**specialdefensemod/sdm**: special defense up and down (Gawain's damage reduction in Camelot, for example)
+		**#**: note/comment - alphanumerics that follow this will be ignored until next space; use same convention as variable names.`;
 
 			}
 			else {
 
-				argStr = restArgs.slice(1).join(' ').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
+				argStr = restArgs.slice(1).join(' ').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/\s?(\#\w+)/g, '').replace(/([a-z]+)/gi, '--$1');
 				servantId = (+servant === +servant) ? +servant : Object.keys(nicknames).find(id => nicknames[id].includes(servant));
 
 				if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
@@ -201,6 +202,7 @@ async function test (servantId, argStr, servantName) {
 		'--bbb'			:	Boolean,
 		'--brave'		:	Boolean,
 		'--verbose'		:	Boolean,
+		'--#'			:	Boolean,
 
 		//Aliases
 		'--v'			:	'--verbose',
