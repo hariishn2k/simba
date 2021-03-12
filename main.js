@@ -74,8 +74,10 @@ client.on('message', async function (message) {
 			}
 			else {
 
-				argStr = restArgs.slice(1).join(' ').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/\s?(\#\w+)/g, '').replace(/([a-z]+)/gi, '--$1');
+				argStr = restArgs.slice(1).join(' ').replace(/\s?(\#\w+)/g, '').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
 				servantId = (+servant === +servant) ? +servant : Object.keys(nicknames).find(id => nicknames[id].includes(servant));
+
+				console.log(argStr);
 
 				if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
 				else reply = await test(servantId, argStr.toLowerCase(), servant);
