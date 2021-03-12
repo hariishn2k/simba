@@ -86,7 +86,7 @@ client.on('message', async function (message) {
 				servantId = (+servant === +servant) ? +servant : Object.keys(nicknames).find(id => nicknames[id].includes(servant));
 
 				if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
-				else if (matches != null) reply = await chain(servantId, argStr.toLowerCase(), servant, matches[0]);
+				else if (matches != null) reply = await chain(servantId, argStr.toLowerCase(), servant, matches[0].substring(1));
 				else reply = await test(servantId, argStr.toLowerCase(), servant);
 
 			}
@@ -424,12 +424,7 @@ async function test (servantId, argStr, servantName) {
 		let cardValue = cardType;
 
 		if (typeof args.cardvalue !== 'undefined') {
-			if (!([1, 1.5, 0.8].includes(args.cardvalue))) {
-				warnMessage += `Card damage value has to be one of [1.5, 0.8, 1]. Setting card damage value to np card value, ${cardType}`;
-			}
-			else {
-				cardValue = parseFloat(args.cardvalue);
-			}
+			cardValue = parseFloat(args.cardvalue);
 		}
 		else {
 			cardValue = (args.npvalue != null) ? cardType : cardValue;
@@ -448,9 +443,9 @@ async function test (servantId, argStr, servantName) {
 
 		if (args.buster && !(args.second || args.third)) firstCardBonus = 0.5;
 
-		if (args.bbb || args.brave) faceCard = true;
+		//if (args.bbb || args.brave) faceCard = true;
 
-		if (args.bbb || args.busterfirst) {
+		if ((args.bbb || args.busterfirst) && faceCard) {
 			firstCardBonus = 0.5;
 
 			if (args.bbb && args.extra) extraCardModifier = 3.5;
@@ -462,19 +457,17 @@ async function test (servantId, argStr, servantName) {
 		firstCardBonus = faceCard ? firstCardBonus : 0;
 		npMulti = faceCard ? 1 : npMulti;
 
-		switch (cardValue) {
-			case 0.8:
-				critDamage += f(parseFloat(passiveSkills.critdamage?.quick ?? 0))/f(100);
-				cardMod +=  f(parseFloat(passiveSkills.cardmod?.quick ?? 0))/f(100);
-				break;
-			case 1:
-				critDamage += f(parseFloat(passiveSkills.critdamage?.arts ?? 0))/f(100);
-				cardMod += f(parseFloat(passiveSkills.cardmod?.arts ?? 0))/f(100);
-				break;
-			case 1.5:
-				critDamage += f(parseFloat(passiveSkills.critdamage?.buster ?? 0))/f(100);
-				cardMod += f(parseFloat(passiveSkills.cardmod?.buster ?? 0))/f(100);
-				break;
+		if (args.quick) {
+			critDamage += f(parseFloat(passiveSkills.critdamage?.quick ?? 0))/f(100);
+			cardMod +=  f(parseFloat(passiveSkills.cardmod?.quick ?? 0))/f(100);
+		}
+		else if (args.arts) {
+			critDamage += f(parseFloat(passiveSkills.critdamage?.arts ?? 0))/f(100);
+			cardMod += f(parseFloat(passiveSkills.cardmod?.arts ?? 0))/f(100);
+		}
+		else if (args.buster) {
+			critDamage += f(parseFloat(passiveSkills.critdamage?.buster ?? 0))/f(100);
+			cardMod += f(parseFloat(passiveSkills.cardmod?.buster ?? 0))/f(100);
 		}
 
 		flatDamage += f(parseFloat(passiveSkills.flatdamage?.value ?? 0));
@@ -489,8 +482,10 @@ async function test (servantId, argStr, servantName) {
 		}
 
 		let val = 0;
-		let fD = f(flatDamage) + f((args.extra ? 0 : 1) * atk * (args.bbb ? 0.2 : 0));
+		let fD = f(flatDamage);
 		let npGainEmbed = null;
+
+		if (faceCard) fD += f((args.extra ? 0 : 1) * atk * (args.bbb ? 0.2 : 0));
 
 		val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + cardMod), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * (1 + (+isCrit))
 			* f(extraCardModifier) * f(Math.max(f(1 + atkMod - defMod), 0)) * f(Math.max(f(1 - specialDefMod), 0)) * f(Math.max(f(1 + pMod + (npMod * +(!faceCard))), 0.001)) * f(1 + seMod) + fD;
@@ -594,7 +589,7 @@ async function test (servantId, argStr, servantName) {
 			});
 		}
 
-		let reply = {embed: replyEmbed};
+		let reply = [{embed: replyEmbed}];
 
 		if (args.enemyhp != undefined) reply = [{embed: replyEmbed}, {embed: npGainEmbed}];
 
@@ -640,7 +635,17 @@ async function test (servantId, argStr, servantName) {
 
 async function chain (servantId, argStr, servantName, match) {
 
-	let cards = match.split('-'), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '';
+	let cards = match.split('-'), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant;
+
+	for (const key of Object.keys(servants)) {
+
+		if (servants[key].collectionNo !== parseInt(servantId)) continue;
+		else if (!('noblePhantasms' in servants[key])) continue;
+		else servant = servants[key];
+
+	}
+
+	if (servant == undefined) return `Error: Bad servant.`;
 
 	switch (cards[0]) {
 		case 'b':
@@ -651,12 +656,16 @@ async function chain (servantId, argStr, servantName, match) {
 			break;
 	}
 
+	let busterchain = cards.reduce((acc, val) => acc + val);
+
+	if (['bbnp', 'bnpb', 'npbb'].includes(busterchain)) attache += '--bbb ';
+
 	argStr = attache + argStr;
 	cards = [...cards, 'e'];
 
-	for (const card of cards) {
+	for (let i = 0; i < 4; i++) {
 
-		let testReply, testEmbed;
+		let testReply, testEmbed, card = cards[i];
 
 		switch (card) {
 			case 'b':
@@ -670,6 +679,14 @@ async function chain (servantId, argStr, servantName, match) {
 			default:
 				break;
 		}
+
+		if (card !== 'np')
+			switch (i) {
+				case 1:
+					attache += '--second '; break;
+				case 2:
+					attache += '--third '; break;
+			}
 
 		testReply = await test(servantId, attache + argStr, servantName);
 
