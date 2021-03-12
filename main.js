@@ -69,17 +69,24 @@ client.on('message', async function (message) {
 		**semod/se**: overcharge np dmg increase (for Gilgamesh its 150 at oc1)
 		**pmod/p**: powermod vs specific traits (Jack OC, Raiko s3)
 		**specialdefensemod/sdm**: special defense up and down (Gawain's damage reduction in Camelot, for example)
-		**#**: note/comment - alphanumerics that follow this will be ignored until next space; use same convention as variable names.`;
+		**#**: note/comment - alphanumerics that follow this will be ignored until whitespace; use same convention as variable names.
+		**\***: damage for chains`;
 
 			}
 			else {
 
-				argStr = restArgs.slice(1).join(' ').replace(/\s?(\#\w+)/g, '').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
+				let matches;
+
+				restArgs = restArgs.slice(1).join(' ')
+
+				if ((matches = restArgs.match(/\*\w+-\w+-\w+/g)) != null)
+					restArgs = restArgs.replace(/\s+\*\w+-\w+-\w+/g, '');
+
+				argStr = restArgs.replace(/\s?(\#\w+)/g, '').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
 				servantId = (+servant === +servant) ? +servant : Object.keys(nicknames).find(id => nicknames[id].includes(servant));
 
-				console.log(argStr);
-
 				if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
+				else if (matches != null) reply = await chain(servantId, argStr.toLowerCase(), servant, matches[0]);
 				else reply = await test(servantId, argStr.toLowerCase(), servant);
 
 			}
@@ -156,9 +163,6 @@ client.on('message', async function (message) {
 			message.channel.send(reply);
 		}
 	}
-
-	return;
-
 });
 
 async function test (servantId, argStr, servantName) {
@@ -204,7 +208,6 @@ async function test (servantId, argStr, servantName) {
 		'--bbb'			:	Boolean,
 		'--brave'		:	Boolean,
 		'--verbose'		:	Boolean,
-		'--#'			:	Boolean,
 
 		//Aliases
 		'--v'			:	'--verbose',
@@ -626,13 +629,90 @@ async function test (servantId, argStr, servantName) {
 			newfields.push({name: 'Flat Damage', value: `${emojis.find(e=>e.name==='divinity')} ${(flatDamage ?? 0)}`, inline: true});
 			newfields.push({name: 'NP Gain', value: `${emojis.find(e=>e.name==='npgen')} ${(args.npgain ?? 0)}%`, inline: true});
 			verboseEmbed.fields = [...verboseEmbed.fields, ...newfields]
-			reply = [{embed: verboseEmbed}, {embed: replyEmbed}];
+			reply = [...reply, {embed: verboseEmbed}];
 
 		}
 
 		return reply;
 
 	}
+}
+
+async function chain (servantId, argStr, servantName, match) {
+
+	let cards = match.split('-'), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '';
+
+	switch (cards[0]) {
+		case 'b':
+			attache = '--bf '; break;
+		case 'a':
+			attache = '--af '; break;
+		default:
+			break;
+	}
+
+	argStr = attache + argStr;
+	cards = [...cards, 'e'];
+
+	for (const card of cards) {
+
+		let testReply, testEmbed;
+
+		switch (card) {
+			case 'b':
+				attache = '--buster '; break;
+			case 'q':
+				attache = '--quick '; break;
+			case 'a':
+				attache = '--arts '; break;
+			case 'e':
+				attache = '--extra '; break;
+			default:
+				break;
+		}
+
+		testReply = await test(servantId, attache + argStr, servantName);
+
+		switch (card) {
+			case 'b':
+				attache = 'Buster '; break;
+			case 'q':
+				attache = 'Quick '; break;
+			case 'a':
+				attache = 'Arts '; break;
+			case 'e':
+				attache = 'Extra '; break;
+			default:
+				attache = 'NP'; break;
+		}
+
+
+		if (Array.isArray(testReply))
+			testEmbed = testReply[0].embed;
+		else
+			testEmbed = testReply.embed;
+
+		let damageVals = testEmbed.description.replace(/(,)/g, '').match(/[0-9]+/g).map(el => parseInt(el)); //`**meanroll** (minroll to maxroll)`
+
+		totalDamage += damageVals[0];
+		minrollTotal += damageVals[1];
+		maxrollTotal += damageVals[2];
+		title = 'Damage for' + testEmbed.title.split(' ').slice(3).join(' ') + ':';
+		thumbnail = testEmbed.thumbnail;
+		description += `${attache === 'NP' ? emojis.find(e=>e.name==='nplewd') : emojis.find(e=>e.name===attache.toLowerCase().trim())} **${damageVals[0]}**\n`;
+
+	}
+
+	description += `\nTotal Damage: **${totalDamage.toLocaleString()}** (${minrollTotal.toLocaleString()} to ${maxrollTotal.toLocaleString()})`
+
+	const replyEmbed = {
+		title,
+		thumbnail,
+		description
+	};
+
+	return {embed: replyEmbed};
+
 }
 
 function parseCalculationString(s) {
