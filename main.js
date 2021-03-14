@@ -457,15 +457,15 @@ async function test (servantId, argStr, servantName) {
 		firstCardBonus = faceCard ? firstCardBonus : 0;
 		npMulti = faceCard ? 1 : npMulti;
 
-		if (args.quick) {
+		if (args.quick || servant.noblePhantasms[np].card === 'quick') {
 			critDamage += f(parseFloat(passiveSkills.critdamage?.quick ?? 0))/f(100);
 			cardMod +=  f(parseFloat(passiveSkills.cardmod?.quick ?? 0))/f(100);
 		}
-		else if (args.arts) {
+		else if (args.arts || servant.noblePhantasms[np].card === 'arts') {
 			critDamage += f(parseFloat(passiveSkills.critdamage?.arts ?? 0))/f(100);
 			cardMod += f(parseFloat(passiveSkills.cardmod?.arts ?? 0))/f(100);
 		}
-		else if (args.buster) {
+		else if (args.buster || servant.noblePhantasms[np].card === 'buster') {
 			critDamage += f(parseFloat(passiveSkills.critdamage?.buster ?? 0))/f(100);
 			cardMod += f(parseFloat(passiveSkills.cardmod?.buster ?? 0))/f(100);
 		}
