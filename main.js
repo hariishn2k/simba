@@ -77,7 +77,7 @@ client.on('message', async function (message) {
 
 				let matches;
 
-				restArgs = restArgs.slice(1).join(' ').split('#')[0];
+				restArgs = restArgs.slice(1).join(' ').split('#')[0].replace(/\/\*[\s\S]*?(\*\/)/g, '');
 
 				if ((matches = restArgs.match(/\w+,\w+,\w+/g)) != null)
 					restArgs = restArgs.replace(/\s+\w+,\w+,\w+/g, '');
