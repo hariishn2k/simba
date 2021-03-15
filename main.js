@@ -430,7 +430,7 @@ async function test (servantId, argStr, servantName) {
 			cardValue = (args.npvalue != null) ? cardType : cardValue;
 		}
 		if (faceCard) {
-			if (args.bbb || args.buster || busterChainMod) {
+			if ((args.bbb && !args.extra) || args.buster || busterChainMod) {
 				cardValue = 1.5;
 			}
 			if (args.second) {
