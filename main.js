@@ -453,7 +453,6 @@ async function test (servantId, argStr, servantName) {
 
 		if (args.extra) {faceCard = true; extraCardModifier = 2;}
 
-
 		extraCardModifier = args.extracardmodifier ?? extraCardModifier;
 		firstCardBonus = faceCard ? firstCardBonus : 0;
 		npMulti = faceCard ? 1 : npMulti;
@@ -477,9 +476,9 @@ async function test (servantId, argStr, servantName) {
 
 		if (isCrit && faceCard) pMod += critDamage;
 
-		if (pMod > 10) {
-			warnMessage += 'Powermod cannot go above 1000%, setting to 1000%\n';
-			pMod = 10;
+		if (critDamage > 5) {
+			warnMessage += 'Critdamage buffs cannot go above 500%, setting to 500%\n';
+			pMod -= (critDamage - 5);
 		}
 
 		let val = 0;
