@@ -659,7 +659,7 @@ async function chain (servantId, argStr, servantName, match) {
 
 	let busterchain = cards.reduce((acc, val) => acc + val);
 
-	if (['bbnp', 'bnpb', 'npbb'].includes(busterchain)) attache += '--bbb ';
+	if (['bbnp', 'bnpb', 'npbb'].includes(busterchain) && servant.npblePhantasms[0].card === 'buster') attache += '--bbb ';
 
 	argStr = attache + argStr;
 	cards = [...cards, 'e'];
