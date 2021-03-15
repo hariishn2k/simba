@@ -543,7 +543,8 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Card Attack Multiplier', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card) : emojis.find(e=>e.name===faceCard.toLowerCase())} ${cardValue}x`, inline: true},
 				{name: 'Critical', value: `${emojis.find(e=>e.name==='crit')} ${isCrit}`, inline: true}
 			];
-			descriptionString = /*'```\n+-----+--------------+--------------+-----------+*/'```\n| Hit |  Damage  | Enemy HP |  Total NP |\n';
+
+			descriptionString = '```\n| Hit |  Damage  | Enemy HP |  Total NP |\n';
 
 			for (let i = 0; i < hits.length; i++) {
 
@@ -562,12 +563,10 @@ async function test (servantId, argStr, servantName) {
 				minNPRgen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isOverkill)/2)) / 100;
 				maxNPRegen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isMaxOverkill)/2)) / 100;
 
-				//descriptionString += '+-----+--------------+--------------+-----------+\n';
 				descriptionString += "| " + ((i+1)+'    ').substring(0, 4) + "|" +(Math.floor(thisHitMinDamage)+'('+hit+'%)'+' '.repeat(10)).substring(0, 10) + "| " + (Math.floor(enemyHp)+' '.repeat(9)).substring(0, 9) + "| " + (minNPRgen.toFixed(2)+"%"+' '.repeat(10)).substring(0, 10) + "|\n";
 
 			}
 
-			descriptionString += /*'+-----+--------------+--------------+-----------+\n*/'```';
 			npfields.push({name: 'NP Gain Sim', value: descriptionString, inline: false});
 			npfields.push({name: 'Total Minroll Refund', value: `**${minNPRgen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)`, inline: false});
 			npfields.push({name: 'Total Maxroll Refund', value: `**${maxNPRegen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${maxOverkillNo} overkill hits)`, inline: false});
@@ -632,7 +631,7 @@ async function test (servantId, argStr, servantName) {
 			newfields.push({name: 'NP Mod', value: `${emojis.find(e=>e.name==='npmod')} ${npMod*100}%`, inline: true});
 			newfields.push({name: 'Supereffective Mod', value: `${emojis.find(e=>e.name==='overcharge')} ${(1 + seMod)}x`, inline: true});
 			newfields.push({name: 'PowerMod', value: `${emojis.find(e=>e.name==='pmod')}${emojis.find(e=>e.name==='crit')}  ${pMod*100}%`, inline: true});
-			newfields.push({name: 'Flat Damage', value: `${emojis.find(e=>e.name==='divinity')} ${(flatDamage ?? 0)}`, inline: true});
+			newfields.push({name: 'Flat Damage', value: `${emojis.find(e=>e.name==='divinity')} ${(fD.toFixed(1) ?? 0)}`, inline: true});
 			newfields.push({name: 'NP Gain', value: `${emojis.find(e=>e.name==='npgen')} ${(args.npgain ?? 0)}%`, inline: true});
 			verboseEmbed.fields = [...verboseEmbed.fields, ...newfields]
 			reply = [...reply, {embed: verboseEmbed}];
