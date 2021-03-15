@@ -648,7 +648,7 @@ async function test (servantId, argStr, servantName) {
 
 async function chain (servantId, argStr, servantName, match) {
 
-	let cards = match.split('-'), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant;
+	let cards = match.split(','), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant;
 
 	for (const key of Object.keys(servants)) {
 
