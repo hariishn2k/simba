@@ -451,7 +451,7 @@ async function test (servantId, argStr, servantName) {
 			if (args.bbb && args.extra) extraCardModifier = 3.5;
 		}
 
-		if (args.extra) extraCardModifier = 2;
+		if (args.extra) {faceCard = true; extraCardModifier = 2;}
 
 
 		extraCardModifier = args.extracardmodifier ?? extraCardModifier;
@@ -511,7 +511,7 @@ async function test (servantId, argStr, servantName) {
 		if (args.enemyhp != null) {
 
 			let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel], minNPRgen = 0, maxNPRegen = 0, enemyHp = (args.enemyhp ?? 0), maxrollEnemyHp = (args.enemyhp ?? 0);
-			let npGainPerHit = [], enemyHPArray = [], hitsArray = [], npGenFields = [], descriptionString = '';
+			let descriptionString = '', npfields = [];
 			let cardNpValue = 0,enemyServerMod = 0, artsFirst = (args.artsfirst) ? 1 : 0;
 			let isOverkill = 0, isMaxOverkill = 0, baseNPGain = 0, minrollTotalVal = 0.9 * f(total - fD) + fD, maxrollTotalVal = 1.099 * f(total - fD) + fD, overkillNo = 0, maxOverkillNo = 0;
 
@@ -536,13 +536,22 @@ async function test (servantId, argStr, servantName) {
 
 			enemyServerMod = args.enemyservermod ?? enemyServerMod;
 
-			descriptionString = `np gain: ${servantNpGain/100}, artsFirst: ${artsFirst}, cardRefundValue: ${cardNpValue}, cardmod: ${cardMod}, enemyServerMod: ${enemyServerMod}, npGainMod: ${npGen}, critical: ${isCrit}\n`;
+			npfields = [
+				{name: 'NP Gain', value: `${emojis.find(e=>e.name==='npgen')} ${servantNpGain/100}`, inline: true},
+				{name: 'Arts First', value: `${emojis.find(e=>e.name==='artsfirst')} ${!!artsFirst}`, inline: true},
+				{name: 'Card Refund Value', value: `${emojis.find(e=>e.name==='npbattery')} ${cardNpValue}`, inline: true},
+				{name: 'Cardmod', value: `${emojis.find(e=>e.name==='avatar')} ${cardMod}`, inline: true},
+				{name: 'Enemy Server Mod', value: `${emojis.find(e=>e.name==='berserker')} ${enemyServerMod}`, inline: true},
+				{name: 'NP Gain Mod', value: `${emojis.find(e=>e.name==='npgen')} ${npGen}`, inline: true},
+				{name: 'Card Attack Multiplier', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card) : emojis.find(e=>e.name===faceCard.toLowerCase())} ${cardValue}x`, inline: true},
+				{name: 'Critical', value: `${emojis.find(e=>e.name==='crit')} ${isCrit}`, inline: true}
+			];
+			descriptionString = '```\n+-----+--------------+--------------+-----------+\n| Hit | Damage Dealt | Remaining HP |  Total NP |\n';
 
 			for (let i = 0; i < hits.length; i++) {
 
 				let hit = hits[i], thisHitMinDamage = f(minrollTotalVal * f(hit) / f(100)), thisHitMaxDamage = Math.floor(f(maxrollTotalVal * f(hit) / f(100)));
 
-				hitsArray.push(thisHitMinDamage);
 				enemyHp -= thisHitMinDamage;
 				maxrollEnemyHp -= thisHitMaxDamage;
 				isOverkill = +(enemyHp < 0);
@@ -555,21 +564,25 @@ async function test (servantId, argStr, servantName) {
 
 				minNPRgen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isOverkill)/2)) / 100;
 				maxNPRegen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isMaxOverkill)/2)) / 100;
-				enemyHPArray.push(Math.floor(enemyHp));
 
-				descriptionString += `**hit ${i+1} =** ${Math.floor(thisHitMinDamage)} (${hit}%) | enemyHp = ${Math.floor(enemyHp)} | total np gained = **${minNPRgen.toFixed(2)}%**\n`;
+				descriptionString += '+-----+--------------+--------------+-----------+\n';
+				descriptionString += "| " + ((i+1)+'    ').substring(0, 4) + "| " +(Math.floor(thisHitMinDamage)+'('+hit+'%)'+' '.repeat(13)).substring(0, 13) + "| " + (Math.floor(enemyHp)+' '.repeat(13)).substring(0, 13) + "| " + (minNPRgen.toFixed(2)+"%"+' '.repeat(10)).substring(0, 10) + "|\n";
 
 			}
 
-			descriptionString += `Total minroll refund: **${minNPRgen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)\n`;
-			descriptionString += `Total maxroll refund: **${maxNPRegen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${maxOverkillNo} overkill hits)`;
-
-			//return `[${npGainPerHit}]\n[${enemyHPArray}]`;
+			descriptionString += '+-----+--------------+--------------+-----------+\n```';
+			npfields.push({name: 'NP Gain Sim', value: descriptionString, inline: false});
+			npfields.push({name: 'Total Minroll Refund', value: `**${minNPRgen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)`, inline: false});
+			npfields.push({name: 'Total Maxroll Refund', value: `**${maxNPRegen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${maxOverkillNo} overkill hits)`, inline: false});
 
 			npGainEmbed = {
-				title: 'NP Gain:',
-				description: descriptionString
+				title: 'NP Gain Calc:'
 			};
+
+			if (!('fields' in npGainEmbed)) npGainEmbed.fields = [];
+
+			npGainEmbed.fields = [...npGainEmbed.fields, ...npfields];
+
 		}
 
 		const replyEmbed = {
