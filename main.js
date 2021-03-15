@@ -69,7 +69,7 @@ client.on('message', async function (message) {
 		**semod/se**: overcharge np dmg increase (for Gilgamesh its 150 at oc1)
 		**pmod/p**: powermod vs specific traits (Jack OC, Raiko s3)
 		**specialdefensemod/sdm**: special defense up and down (Gawain's damage reduction in Camelot, for example)
-		**#**: note/comment - alphanumerics that follow this will be ignored until whitespace; use same convention as variable names.
+		**#**: note/comment - anything that follows this will be ignored
 		**\***: damage for chains`;
 
 			}
@@ -82,7 +82,7 @@ client.on('message', async function (message) {
 				if ((matches = restArgs.match(/\*\w+-\w+-\w+/g)) != null)
 					restArgs = restArgs.replace(/\s+\*\w+-\w+-\w+/g, '');
 
-				argStr = restArgs.replace(/\|/g, '').replace(/\s?(\#\w+)/g, '').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
+				argStr = restArgs.split('#')[0].replace(/\|/g, '').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
 				servantId = (+servant === +servant) ? +servant : Object.keys(nicknames).find(id => nicknames[id].includes(servant));
 
 				if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
