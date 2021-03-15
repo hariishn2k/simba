@@ -430,7 +430,7 @@ async function test (servantId, argStr, servantName) {
 			cardValue = (args.npvalue != null) ? cardType : cardValue;
 		}
 		if (faceCard) {
-			if ((args.bbb && !args.extra) || args.buster || busterChainMod) {
+			if ((args.bbb && !args.extra) || args.buster || (busterChainMod && !args.extra)) {
 				cardValue = 1.5;
 			}
 			if (args.second) {
@@ -443,15 +443,13 @@ async function test (servantId, argStr, servantName) {
 
 		if (args.buster && !(args.second || args.third)) firstCardBonus = 0.5;
 
-		//if (args.bbb || args.brave) faceCard = true;
+		if (args.extra) {faceCard = true; extraCardModifier = 2;}
 
 		if ((args.bbb || args.busterfirst) && faceCard) {
 			firstCardBonus = 0.5;
 
 			if (args.bbb && args.extra) extraCardModifier = 3.5;
 		}
-
-		if (args.extra) {faceCard = true; extraCardModifier = 2;}
 
 		extraCardModifier = args.extracardmodifier ?? extraCardModifier;
 		firstCardBonus = faceCard ? firstCardBonus : 0;
@@ -648,7 +646,7 @@ async function test (servantId, argStr, servantName) {
 
 async function chain (servantId, argStr, servantName, match) {
 
-	let cards = match.split(','), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant;
+	let cards = match.split(','), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant, chain = [{}, {}, {}];
 
 	for (const key of Object.keys(servants)) {
 
@@ -660,62 +658,51 @@ async function chain (servantId, argStr, servantName, match) {
 
 	if (servant == undefined) return `Error: Bad servant.`;
 
-	switch (cards[0]) {
-		case 'b':
-			attache = '--bf '; break;
-		case 'a':
-			attache = '--af '; break;
-		default:
-			break;
+	for (let i = 0; i < 3; i++) {
+
+		if (cards[i] === 'np') {
+			chain[i].name = servant.noblePhantasms[0].card;
+			chain[i].np = true;
+		}
+		else {
+			switch (cards[i]) {
+				case 'b':
+					chain[i].name = 'buster'; break;
+				case 'q':
+					chain[i].name = 'quick'; break;
+				case 'a':
+					chain[i].name = 'arts'; break;
+				default:
+					break;
+			}
+
+			chain[i].np = false;
+
+			switch (i) {
+				case 0:
+					chain[i].position = 'first'; break;
+				case 1:
+					chain[i].position = 'second'; break;
+				case 2:
+					chain[i].position = 'third'; break;
+			}
+		}
 	}
 
-	let busterchain = cards.reduce((acc, val) => acc + val);
+	if (chain[0].name === 'buster') attache += '--bf ';
+	else if (chain[0].name === 'arts') attache += '--af ';
 
-	if (['bbnp', 'bnpb', 'npbb'].includes(busterchain) && servant.noblePhantasms[0].card === 'buster') attache += '--bbb ';
+	if (chain.every((val, i, a) => val.name === a[0].name)) attache += '--bbb ';
 
 	argStr = attache + argStr;
-	cards = [...cards, 'e'];
+	chain = [...chain, {name: 'extra', np: false}];
 
 	for (let i = 0; i < 4; i++) {
 
-		let testReply, testEmbed, card = cards[i];
+		let testReply, testEmbed, card = chain[i];
 
-		switch (card) {
-			case 'b':
-				attache = '--buster '; break;
-			case 'q':
-				attache = '--quick '; break;
-			case 'a':
-				attache = '--arts '; break;
-			case 'e':
-				attache = '--extra '; break;
-			default:
-				break;
-		}
-
-		if (card !== 'np')
-			switch (i) {
-				case 1:
-					attache += '--second '; break;
-				case 2:
-					attache += '--third '; break;
-			}
-
+		attache = (card.np ? '' : '--' + card.name)  + (card.position ? ' --' + card.position : '') + ' ';
 		testReply = await test(servantId, attache + argStr, servantName);
-
-		switch (card) {
-			case 'b':
-				attache = 'Buster '; break;
-			case 'q':
-				attache = 'Quick '; break;
-			case 'a':
-				attache = 'Arts '; break;
-			case 'e':
-				attache = 'Extra '; break;
-			default:
-				attache = 'NP'; break;
-		}
-
 
 		if (Array.isArray(testReply))
 			testEmbed = testReply[0].embed;
@@ -729,7 +716,7 @@ async function chain (servantId, argStr, servantName, match) {
 		maxrollTotal += damageVals[2];
 		title = 'Damage for' + testEmbed.title.split(' ').slice(3).join(' ') + ':';
 		thumbnail = testEmbed.thumbnail;
-		description += `${attache === 'NP' ? emojis.find(e=>e.name==='nplewd') : emojis.find(e=>e.name===attache.toLowerCase().trim())} **${damageVals[0]}**\n`;
+		description += `${card.np ? emojis.find(e=>e.name==='nplewd') : emojis.find(e=>e.name===card.name)} **${damageVals[0]}**\n`;
 
 	}
 
