@@ -785,5 +785,8 @@ function calculate(calc) {
     }
 }
 
+/*
+ * The above two functions (viz. `parseCalculationString` and `calculate`) have been taken and slightly modified from https://stackoverflow.com/a/32292728, written by 'Stuart'.
+ */
 
 client.login(config.BOT_TOKEN);
