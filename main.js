@@ -532,7 +532,7 @@ async function test (servantId, argStr, servantName) {
 				default: enemyServerMod = 1; break;
 			}
 
-			if ((args.arts &&  !(args.second || args.third)) || args.artsfirst) artsFirst = 1;
+			if ((cardNpValue === 3 &&  !(args.second || args.third)) || args.artsfirst) artsFirst = 1;
 
 			enemyServerMod = args.enemyservermod ?? enemyServerMod;
 
@@ -546,7 +546,7 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Card Attack Multiplier', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card) : emojis.find(e=>e.name===faceCard.toLowerCase())} ${cardValue}x`, inline: true},
 				{name: 'Critical', value: `${emojis.find(e=>e.name==='crit')} ${isCrit}`, inline: true}
 			];
-			descriptionString = '```\n+-----+--------------+--------------+-----------+\n| Hit | Damage Dealt | Remaining HP |  Total NP |\n';
+			descriptionString = /*'```\n+-----+--------------+--------------+-----------+*/'```\n| Hit |  Damage  | Enemy HP |  Total NP |\n';
 
 			for (let i = 0; i < hits.length; i++) {
 
@@ -565,12 +565,12 @@ async function test (servantId, argStr, servantName) {
 				minNPRgen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isOverkill)/2)) / 100;
 				maxNPRegen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isMaxOverkill)/2)) / 100;
 
-				descriptionString += '+-----+--------------+--------------+-----------+\n';
-				descriptionString += "| " + ((i+1)+'    ').substring(0, 4) + "| " +(Math.floor(thisHitMinDamage)+'('+hit+'%)'+' '.repeat(13)).substring(0, 13) + "| " + (Math.floor(enemyHp)+' '.repeat(13)).substring(0, 13) + "| " + (minNPRgen.toFixed(2)+"%"+' '.repeat(10)).substring(0, 10) + "|\n";
+				//descriptionString += '+-----+--------------+--------------+-----------+\n';
+				descriptionString += "| " + ((i+1)+'    ').substring(0, 4) + "|" +(Math.floor(thisHitMinDamage)+'('+hit+'%)'+' '.repeat(10)).substring(0, 10) + "| " + (Math.floor(enemyHp)+' '.repeat(9)).substring(0, 9) + "| " + (minNPRgen.toFixed(2)+"%"+' '.repeat(10)).substring(0, 10) + "|\n";
 
 			}
 
-			descriptionString += '+-----+--------------+--------------+-----------+\n```';
+			descriptionString += /*'+-----+--------------+--------------+-----------+\n*/'```';
 			npfields.push({name: 'NP Gain Sim', value: descriptionString, inline: false});
 			npfields.push({name: 'Total Minroll Refund', value: `**${minNPRgen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)`, inline: false});
 			npfields.push({name: 'Total Maxroll Refund', value: `**${maxNPRegen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${maxOverkillNo} overkill hits)`, inline: false});
