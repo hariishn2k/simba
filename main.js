@@ -86,7 +86,7 @@ client.on('message', async function (message) {
 				servantId = (+servant === +servant) ? +servant : Object.keys(nicknames).find(id => nicknames[id].includes(servant));
 
 				if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
-				else if (matches != null) reply = await chain(servantId, argStr.toLowerCase(), servant, matches[0].substring(1));
+				else if (matches != null) reply = await chain(servantId, argStr.toLowerCase(), servant, matches[0]);
 				else reply = await test(servantId, argStr.toLowerCase(), servant);
 
 			}
