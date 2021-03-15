@@ -77,12 +77,12 @@ client.on('message', async function (message) {
 
 				let matches;
 
-				restArgs = restArgs.slice(1).join(' ')
+				restArgs = restArgs.slice(1).join(' ').split('#')[0];
 
-				if ((matches = restArgs.match(/\*\w+-\w+-\w+/g)) != null)
-					restArgs = restArgs.replace(/\s+\*\w+-\w+-\w+/g, '');
+				if ((matches = restArgs.match(/\*\w+,\w+,\w+/g)) != null)
+					restArgs = restArgs.replace(/\s+\*\w+,\w+,\w+/g, '');
 
-				argStr = restArgs.split('#')[0].replace(/\|/g, '').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
+				argStr = restArgs.replace(/\|/g, '').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
 				servantId = (+servant === +servant) ? +servant : Object.keys(nicknames).find(id => nicknames[id].includes(servant));
 
 				if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
