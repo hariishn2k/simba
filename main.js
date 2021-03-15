@@ -280,7 +280,7 @@ async function test (servantId, argStr, servantName) {
 		else return `${err}`.replace(/--/g, '');
 	}
 
-	if (args._.length > 0 && args._.indexOf('') !== 0) warnMessage = `Unrecognised option: ${args['_'][0].substring(2)}!\n`;
+	if (args._.length > 0 && args._.indexOf('') !== 0) warnMessage = `Unrecognised option: ${args['_'][0]}!\n`;
 
 	for (const key of Object.keys(args)) {
 		if (key !== '_') {
