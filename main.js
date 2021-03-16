@@ -79,8 +79,8 @@ client.on('message', async function (message) {
 
 				restArgs = restArgs.slice(1).join(' ').split('#')[0].replace(/\/\*[\s\S]*?(\*\/)/g, '');
 
-				if ((matches = restArgs.match(/\w+,\w+,\w+/g)) != null)
-					restArgs = restArgs.replace(/\s+\w+,\w+,\w+/g, '');
+				if ((matches = restArgs.match(/([bqa]|(np)){3}/g)) != null)
+					restArgs = restArgs.replace(/\s+([bqa]|(np)){3}/g, '');
 
 				argStr = restArgs.replace(/\|/g, '').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
 				servantId = (+servant === +servant) ? +servant : Object.keys(nicknames).find(id => nicknames[id].includes(servant));
@@ -106,7 +106,7 @@ client.on('message', async function (message) {
 		**artsfirst/af**: first card arts bonus
 		**first/second/third**: position of your face card in a chain
 		**extracardmodifier/ecm**: used for the extra attack (2 for normal brave chain, 3,5 for QQQ/AAA/BBB)
-		**bbb/busterchainmod**: buster brave chain dmg bonus`;
+		**bc/busterchainmod**: buster brave chain dmg bonus`;
 	}
 	else if (command === 'getnames') {
 		servant = restArgs[0];
@@ -205,7 +205,7 @@ async function test (servantId, argStr, servantName) {
 		'--enemyservermod'	:	Number,
 		'--cardrefundvalue'	:	Number,
 		'--enemyhp'		:	Number,
-		'--bbb'			:	Boolean,
+		'--bc'			:	Boolean,
 		'--brave'		:	Boolean,
 		'--verbose'		:	Boolean,
 
@@ -235,7 +235,7 @@ async function test (servantId, argStr, servantName) {
 		'--sdm'			:	'--specialdefensemod',
 		'--crit'		:	'--critical',
 		'--bf'			:	'--busterfirst',
-		'--busterchainmod'	:	'--bbb',
+		'--busterchainmod'	:	'--bc',
 		'--crv'			:	'--cardrefundvalue',
 		'--af'			:	'--artsfirst',
 		'--sm'			:	'--enemyservermod',
@@ -398,7 +398,7 @@ async function test (servantId, argStr, servantName) {
 
 		let faceCard = (args.extra || args.buster || args.arts || args.quick) ? true : false;
 		let extraCardModifier = 1;
-		let busterChainMod = (args.bbb ? (0.2 * atk) : 0);
+		let busterChainMod = (args.bc ? (0.2 * atk) : 0);
 		let firstCardBonus = 0;
 
 		if (npMulti === 0 && !faceCard) return `**${servantName}** NP does not deal damage!`;
@@ -435,7 +435,7 @@ async function test (servantId, argStr, servantName) {
 			cardValue = (args.npvalue != null) ? cardType : cardValue;
 		}
 		if (faceCard) {
-			if ((args.bbb && !args.extra) || args.buster || (busterChainMod && !args.extra)) {
+			if ((args.bc && !args.extra) || args.buster || (busterChainMod && !args.extra)) {
 				cardValue = 1.5;
 			}
 			if (args.second) {
@@ -450,10 +450,10 @@ async function test (servantId, argStr, servantName) {
 
 		if (args.extra) {faceCard = true; extraCardModifier = 2;}
 
-		if ((args.bbb || args.busterfirst) && faceCard) {
+		if ((args.bc || args.busterfirst) && faceCard) {
 			firstCardBonus = 0.5;
 
-			if (args.bbb && args.extra) extraCardModifier = 3.5;
+			if (args.bc && args.extra) extraCardModifier = 3.5;
 		}
 
 		extraCardModifier = args.extracardmodifier ?? extraCardModifier;
@@ -488,7 +488,7 @@ async function test (servantId, argStr, servantName) {
 		let fD = f(flatDamage);
 		let npGainEmbed = null;
 
-		if (faceCard) fD += f((args.extra ? 0 : 1) * atk * (args.bbb ? 0.2 : 0));
+		if (faceCard) fD += f((args.extra ? 0 : 1) * atk * (args.bc ? 0.2 : 0));
 
 		val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + (args.extra ? 0 : cardMod)), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * (1 + (+isCrit))
 			* f(extraCardModifier) * f(Math.max(f(1 + atkMod - defMod), 0)) * f(Math.max(f(1 - specialDefMod), 0)) * f(Math.max(f(1 + pMod + (npMod * +(!faceCard))), 0.001)) * f(1 + seMod * +(!faceCard)) + fD;
@@ -496,7 +496,7 @@ async function test (servantId, argStr, servantName) {
 		if (args.arts) faceCard = 'Arts';
 		else if (args.quick) faceCard = 'Quick';
 		else if (args.extra) faceCard = 'Extra';
-		else if (args.buster || args.bbb) faceCard = 'Buster';
+		else if (args.buster) faceCard = 'Buster';
 		else faceCard = 'NP';
 
 		minrollTotalVal = 0.9 * (val - fD) + fD;
@@ -652,7 +652,7 @@ async function test (servantId, argStr, servantName) {
 
 async function chain (servantId, argStr, servantName, match) {
 
-	let cards = match.split(','), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant, chain = [{}, {}, {}];
+	let cards = match.match(/([bqa]|(np))/g), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant, chain = [{}, {}, {}];
 
 	for (const key of Object.keys(servants)) {
 
@@ -698,7 +698,7 @@ async function chain (servantId, argStr, servantName, match) {
 	if (chain[0].name === 'buster') attache += '--bf ';
 	else if (chain[0].name === 'arts') attache += '--af ';
 
-	if (chain.every((val, i, a) => val.name === a[0].name)) attache += '--bbb ';
+	if (chain.every((val, i, a) => val.name === a[0].name)) attache += '--bc ';
 
 	argStr = attache + argStr;
 	chain = [...chain, {name: 'extra', np: false}];
