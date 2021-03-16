@@ -713,6 +713,8 @@ async function chain (servantId, argStr, servantName, match) {
 
 		chain[cardNo].command = command.slice(2);
 
+		if (chain.every((val, i, a) => (val.name === a[0].name) chain[3].command += ' --ecm=3.5 ';
+
 	}
 
 	if (baseStr.match(/\s+--hp=\d+/g) != null) {
