@@ -712,8 +712,7 @@ async function chain (servantId, argStr, servantName, match) {
 		chain[cardNo].command = command.slice(2);
 
 	}
-	chain[0].command = ' buster ';
-	console.log(commands);
+
 	for (let i = 0; i < 4; i++) {
 
 		let testReply, testEmbed, card = chain[i];
