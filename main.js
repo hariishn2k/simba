@@ -70,7 +70,7 @@ client.on('message', async function (message) {
 		**pmod/p**: powermod vs specific traits (Jack OC, Raiko s3)
 		**specialdefensemod/sdm**: special defense up and down (Gawain's damage reduction in Camelot, for example)
 		**#**: note/comment - anything that follows this will be ignored
-		**\***: damage for chains`;
+		**/\*...\*/**: anything between these will be ignored (can be used inline)`;
 
 			}
 			else {
@@ -317,7 +317,12 @@ async function test (servantId, argStr, servantName) {
 
 		let nps = Object.keys(servant.noblePhantasms), np, cardType;
 
-		if (parseInt(servantId) <= parseInt(maxNAServant)) nps = Object.keys(NAServants[Object.keys(NAServants).find(x => ((NAServants[x].collectionNo === parseInt(servantId)) && ('noblePhantasms' in NAServants[x])))].noblePhantasms);
+		if (parseInt(servantId) <= parseInt(maxNAServant)) {
+
+			nps = Object.keys(NAServants[Object.keys(NAServants).find(x => ((NAServants[x].collectionNo === parseInt(servantId)) && ('noblePhantasms' in NAServants[x])))].noblePhantasms);
+			servantName = NAServants[Object.keys(NAServants).find(x=>NAServants[x].collectionNo === parseInt(servantId))].name;
+
+		}
 
 		np = nps[nps.length - 1];
 
