@@ -297,7 +297,7 @@ async function test (servantId, argStr, servantName) {
 		else if (!('noblePhantasms' in servants[key])) continue;
 		else servant = servants[key];
 
-		servantName = servantName ?? servant.name;
+		servantName = servant.name;
 		servantName = servantName[0].toUpperCase() + servantName.slice(1);
 
 		if (args.npLevel > 4) {
