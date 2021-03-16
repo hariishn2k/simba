@@ -70,7 +70,7 @@ client.on('message', async function (message) {
 		**pmod/p**: powermod vs specific traits (Jack OC, Raiko s3)
 		**specialdefensemod/sdm**: special defense up and down (Gawain's damage reduction in Camelot, for example)
 		**#**: note/comment - anything that follows this will be ignored
-		**/\*...\*/**: anything between these will be ignored (can be used inline)`;
+		**/\\\*...\\\*/**: anything between these will be ignored (can be used inline)`;
 
 			}
 			else {
