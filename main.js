@@ -703,12 +703,23 @@ async function chain (servantId, argStr, servantName, match) {
 	argStr = attache + argStr;
 	chain = [...chain, {name: 'extra', np: false}];
 
+	let [baseStr, ...commands] = argStr.split(' --card=');
+
+	for (const command of commands) {
+
+		let cardNo = command[0] - 1;
+
+		chain[cardNo].command = command.slice(2);
+
+	}
+	chain[0].command = ' buster ';
+	console.log(commands);
 	for (let i = 0; i < 4; i++) {
 
 		let testReply, testEmbed, card = chain[i];
 
 		attache = (card.np ? '' : '--' + card.name)  + (card.position ? ' --' + card.position : '') + ' ';
-		testReply = await test(servantId, attache + argStr, servantName);
+		testReply = await test(servantId, attache + baseStr + ' ' + chain[i].command, servantName);
 
 		if (Array.isArray(testReply))
 			testEmbed = testReply[0].embed;
