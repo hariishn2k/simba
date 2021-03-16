@@ -653,6 +653,7 @@ async function test (servantId, argStr, servantName) {
 async function chain (servantId, argStr, servantName, match) {
 
 	let cards = match.match(/([bqa]|(np))/g), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant, chain = [{}, {}, {}];
+	let refund = false, minrollTotalRefund = 0, maxrollTotalRefund = 0, minOverkill = 0, maxOverkill = 0;
 
 	for (const key of Object.keys(servants)) {
 
@@ -698,7 +699,8 @@ async function chain (servantId, argStr, servantName, match) {
 	if (chain[0].name === 'buster') attache += '--bf ';
 	else if (chain[0].name === 'arts') attache += '--af ';
 
-	if (chain.every((val, i, a) => val.name === a[0].name)) attache += '--bc ';
+	if (chain.every((val, i, a) => (val.name === a[0].name) && (val.name === 'buster'))) attache += '--bc ';
+	if (chain.every((val, i, a) => (val.name === a[0].name) && (val.name === 'arts'))) minrollTotalRefund += (maxrollTotalRefund += 20);
 
 	argStr = attache + argStr;
 	chain = [...chain, {name: 'extra', np: false}];
@@ -710,6 +712,13 @@ async function chain (servantId, argStr, servantName, match) {
 		let cardNo = command[0] - 1;
 
 		chain[cardNo].command = command.slice(2);
+
+	}
+
+	if (baseStr.match(/\s+--hp=\d+/g) != null) {
+
+		refund = true;
+		baseStr.replace(/\s+--hp=\d+/g, '');
 
 	}
 
@@ -727,22 +736,38 @@ async function chain (servantId, argStr, servantName, match) {
 
 		let damageVals = testEmbed.description.replace(/(,)/g, '').match(/[0-9]+/g).map(el => parseInt(el)); //`**meanroll** (minroll to maxroll)`
 
+		if (refund) {
+
+			minrollTotalRefund += parseFloat(testReply[1].embed.fields.find(el => el.name === 'Total Minroll Refund').value.slice(2));
+			maxrollTotalRefund += parseFloat(testReply[1].embed.fields.find(el => el.name === 'Total Maxroll Refund').value.slice(2));
+
+		}
+
 		totalDamage += damageVals[0];
 		minrollTotal += damageVals[1];
 		maxrollTotal += damageVals[2];
 		title = 'Damage for' + testEmbed.title.split(' ').slice(3).join(' ') + ':';
 		thumbnail = testEmbed.thumbnail;
-		description += `${card.np ? emojis.find(e=>e.name==='nplewd') : emojis.find(e=>e.name===card.name)} **${damageVals[0]}**\n`;
+		description += `${card.np ? emojis.find(e=>e.name==='nplewd') : emojis.find(e=>e.name===card.name)} **${damageVals[0].toLocaleString()}**\n`;
 
 	}
-
-	description += `\nTotal Damage: **${totalDamage.toLocaleString()}** (${minrollTotal.toLocaleString()} to ${maxrollTotal.toLocaleString()})`
 
 	const replyEmbed = {
 		title,
 		thumbnail,
 		description
 	};
+
+	replyEmbed.fields = [{name: 'Total Damage', value: `**${totalDamage.toLocaleString()}** (${minrollTotal.toLocaleString()} to ${maxrollTotal.toLocaleString()})`}];
+
+	if (refund) {
+
+		replyEmbed.fields = [
+			...replyEmbed.fields,
+			{name: 'Total Minroll Refund', value: `${emojis.find(e=>e.name==='npbattery')} **${minrollTotalRefund.toFixed(2)}%**`},
+			{name: 'Total Maxroll Refund', value: `${emojis.find(e=>e.name==='npbattery')} **${maxrollTotalRefund.toFixed(2)}%**`}
+		];
+	}
 
 	return {embed: replyEmbed};
 
