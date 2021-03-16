@@ -572,6 +572,8 @@ async function test (servantId, argStr, servantName) {
 
 			}
 
+			descriptionString += '```';
+
 			npfields.push({name: 'NP Gain Sim', value: descriptionString, inline: false});
 			npfields.push({name: 'Total Minroll Refund', value: `**${minNPRgen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)`, inline: false});
 			npfields.push({name: 'Total Maxroll Refund', value: `**${maxNPRegen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${maxOverkillNo} overkill hits)`, inline: false});
