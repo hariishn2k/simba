@@ -653,7 +653,7 @@ async function test (servantId, argStr, servantName) {
 async function chain (servantId, argStr, servantName, match) {
 
 	let cards = match.match(/([bqa]|(np))/g), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant, chain = [{}, {}, {}];
-	let refund = false, minrollTotalRefund = 0, maxrollTotalRefund = 0, minOverkill = 0, maxOverkill = 0;
+	let minEnemyHp, refund = false, minrollTotalRefund = 0;
 
 	for (const key of Object.keys(servants)) {
 
@@ -700,7 +700,7 @@ async function chain (servantId, argStr, servantName, match) {
 	else if (chain[0].name === 'arts') attache += '--af ';
 
 	if (chain.every((val, i, a) => (val.name === a[0].name) && (val.name === 'buster'))) attache += '--bc ';
-	if (chain.every((val, i, a) => (val.name === a[0].name) && (val.name === 'arts'))) minrollTotalRefund += (maxrollTotalRefund += 20);
+	if (chain.every((val, i, a) => (val.name === a[0].name) && (val.name === 'arts'))) minrollTotalRefund += 20;
 
 	argStr = attache + argStr;
 	chain = [...chain, {name: 'extra', np: false}];
@@ -717,10 +717,11 @@ async function chain (servantId, argStr, servantName, match) {
 
 	}
 
-	if (baseStr.match(/\s+--hp=\d+/g) != null) {
+	if ((minEnemyHp = baseStr.match(/\s+--hp=\d+/g)) != null) {
 
 		refund = true;
-		baseStr.replace(/\s+--hp=\d+/g, '');
+		minEnemyHp = parseInt(minEnemyHp[0].split('=')[1]);
+		baseStr = baseStr.replace(/\s+--hp=\d+/g, '');
 
 	}
 
@@ -728,7 +729,7 @@ async function chain (servantId, argStr, servantName, match) {
 
 		let testReply, testEmbed, card = chain[i];
 
-		attache = (card.np ? '' : '--' + card.name)  + (card.position ? ' --' + card.position : '') + ' ';
+		attache = (card.np ? '' : '--' + card.name)  + (card.position ? ' --' + card.position : '') + (refund ? ` --hp=${minEnemyHp} ` : ' ');
 		testReply = await test(servantId, attache + baseStr + ' ' + chain[i].command, servantName);
 
 		if (Array.isArray(testReply))
@@ -741,7 +742,8 @@ async function chain (servantId, argStr, servantName, match) {
 		if (refund) {
 
 			minrollTotalRefund += parseFloat(testReply[1].embed.fields.find(el => el.name === 'Total Minroll Refund').value.slice(2));
-			maxrollTotalRefund += parseFloat(testReply[1].embed.fields.find(el => el.name === 'Total Maxroll Refund').value.slice(2));
+			//maxrollTotalRefund += parseFloat(testReply[1].embed.fields.find(el => el.name === 'Total Maxroll Refund').value.slice(2));
+			minEnemyHp -= damageVals[1];
 
 		}
 
@@ -767,7 +769,7 @@ async function chain (servantId, argStr, servantName, match) {
 		replyEmbed.fields = [
 			...replyEmbed.fields,
 			{name: 'Total Minroll Refund', value: `${emojis.find(e=>e.name==='npbattery')} **${minrollTotalRefund.toFixed(2)}%**`},
-			{name: 'Total Maxroll Refund', value: `${emojis.find(e=>e.name==='npbattery')} **${maxrollTotalRefund.toFixed(2)}%**`}
+			//{name: 'Total Maxroll Refund', value: `${emojis.find(e=>e.name==='npbattery')} **${maxrollTotalRefund.toFixed(2)}%**`}
 		];
 	}
 
