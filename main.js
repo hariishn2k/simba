@@ -525,6 +525,9 @@ async function test (servantId, argStr, servantName) {
 				default: cardValue = 1; break;
 			}
 
+			if (args.second && (faceCard !== 'NP')) cardNpValue *= 1.5;
+			if (args.third && (faceCard !== 'NP')) cardNpValue *= 2;
+
 			switch (enemyClass) {
 				case 'rider': enemyServerMod = 1.1; break;
 				case 'caster': enemyServerMod = 1.2; break;
@@ -740,6 +743,8 @@ async function chain (servantId, argStr, servantName, match) {
 		let damageVals = testEmbed.description.replace(/(,)/g, '').match(/[0-9]+/g).map(el => parseInt(el)); //`**meanroll** (minroll to maxroll)`
 
 		if (refund) {
+
+			if (card.np) minrollTotalRefund = 0;
 
 			minrollTotalRefund += parseFloat(testReply[1].embed.fields.find(el => el.name === 'Total Minroll Refund').value.slice(2));
 			//maxrollTotalRefund += parseFloat(testReply[1].embed.fields.find(el => el.name === 'Total Maxroll Refund').value.slice(2));
