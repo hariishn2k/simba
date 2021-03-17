@@ -197,12 +197,16 @@ async function test (servantId, argStr, servantName) {
 		'--critical'		:	Boolean,
 		'--busterfirst'		:	Boolean,
 		'--artsfirst'		:	Boolean,
+		'--quickfirst'		:	Boolean,
 		'--first'		:	Boolean,
 		'--second'		:	Boolean,
 		'--third'		:	Boolean,
 		'--extra'		:	Boolean,
 		'--extracardmodifier'	:	Number,
 		'--enemyservermod'	:	Number,
+		'--serverrate'		:	Number,
+		'--stargen'		:	Number,
+		'--stars'		:	Boolean,
 		'--cardrefundvalue'	:	Number,
 		'--enemyhp'		:	Number,
 		'--bc'			:	Boolean,
@@ -221,6 +225,7 @@ async function test (servantId, argStr, servantName) {
 		'--l'			:	'--level',
 		'--npgain'		:	'--npgen',
 		'--ng'			:	'--npgen',
+		'--sg'			:	'--stargen',
 		'--m'			:	'--cardmod',
 		'--hp'			:	'--enemyhp',
 		'--c'			:	'--ce',
@@ -238,9 +243,11 @@ async function test (servantId, argStr, servantName) {
 		'--busterchainmod'	:	'--bc',
 		'--crv'			:	'--cardrefundvalue',
 		'--af'			:	'--artsfirst',
+		'--qf'			:	'--artsfirst',
 		'--sm'			:	'--enemyservermod',
 		'--esm'			:	'--enemyservermod',
 		'--sm'			:	'--enemyservermod',
+		'--srr'			:	'--serverrate',
 		'--ecm'			:	'--extracardmodifier',
 		'--man'			:	'--human',
 
@@ -410,6 +417,7 @@ async function test (servantId, argStr, servantName) {
 
 		let passiveSkills = passiveSkillSet[servantId];
 		let flatDamage = f(args.flatdamage?.reduce((acc, val) => acc + val) ?? 0);
+		let starGen =  f(args.stargen?.reduce((acc, val) => acc + val) ?? 0);
 		let npGen = f(args.npgen?.reduce((acc, val) => acc + val) ?? 0)/f(100);
 		let seMod = f(((args.semod?.reduce((acc, val) => acc + val)) ?? 100) - 100)/f(100);
 		let pMod = (args.pmod?.reduce((acc, val) => acc + val) ?? 0)/f(100);
@@ -475,6 +483,7 @@ async function test (servantId, argStr, servantName) {
 
 		flatDamage += f(parseFloat(passiveSkills.flatdamage?.value ?? 0));
 		npGen += f(parseFloat(passiveSkills.npgen?.value ?? 0))/f(100);
+		starGen += f(parseFloat(passiveSkills.stargen?.value ?? 0))/f(100);
 		npMod += f(parseFloat(passiveSkills.npmod?.value ?? 0))/f(100);
 
 		if (isCrit && faceCard) pMod += critDamage;
@@ -487,6 +496,7 @@ async function test (servantId, argStr, servantName) {
 		let val = 0;
 		let fD = f(flatDamage);
 		let npGainEmbed = null;
+		let starGenEmbed = null;
 
 		if (faceCard) fD += f((args.extra ? 0 : 1) * atk * (args.bc ? 0.2 : 0));
 
@@ -504,11 +514,58 @@ async function test (servantId, argStr, servantName) {
 		for (const hit of hits.slice(0, hits.length - 1)) {
 
 			total += val * f(f(hit)/f(100)); //add until second-to-last, then add the difference
-
 		}
 
 		total += (val - total);
 		total = Math.floor(total);
+
+		if ((args.stars != null) && (args.enemyhp != null)) {
+
+			let enemyHp = args.enemyhp, maxrollEnemyHp = enemyHp, isMaxOverkill = 0, isOverkill = 0, serverRate = (args.serverrate ?? 0), totalDropChance = 0, totalMaxDropChance = 0;
+			let overkillNo = 0, maxOverkillNo = 0, minrollTotalVal = 0.9 * f(total - fD) + fD, maxrollTotalVal = 1.099 * f(total - fD) + fD;
+
+			let cardStarValue = (args.quick || (servant.noblePhantasms[np].card === 'quick')) ? 0.8 : 0;
+			cardStarValue = (args.buster || servant.noblePhantasms[np].card === 'buster') ? 0.1 : cardStarValue;
+			if (args.second && faceCard) cardStarValue += 0.05 * (args.quick ? 10 : 1);
+			else if (args.third && faceCard) cardStarValue += 0.05 * (args.quick ? 20 : 2);
+
+			for (let i = 0; i < hits.length; i++) {
+
+				let hit = hits[i], thisHitMinDamage = f(minrollTotalVal * f(hit) / f(100)), thisHitMaxDamage = Math.floor(f(maxrollTotalVal * f(hit) / f(100)));
+
+				enemyHp -= thisHitMinDamage;
+				maxrollEnemyHp -= thisHitMaxDamage;
+				isOverkill = +(enemyHp < 0);
+				isMaxOverkill = +(maxrollEnemyHp < 0);
+				overkillNo += isOverkill;
+				maxOverkillNo += isMaxOverkill;
+
+				totalDropChance += Math.min(f(f(servant.starGen/1000) + f(args.qf ? 0.2 : 0) + f(cardStarValue * f(1 + cardMod)) + f(serverRate) + f(starGen) + f(0.2 * +(isCrit)) + f(0.3 * +(isOverkill))), 3);
+				totalMaxDropChance += Math.min(f(f(servant.starGen/1000) + f(args.qf ? 0.2 : 0) + f(cardStarValue * f(1 + cardMod)) + f(serverRate) + f(starGen) + f(0.2 * +(isCrit)) + f(0.3 * +(isMaxOverkill))), 3);
+
+			}
+
+			let minStars = `${parseInt((totalDropChance*100)/100)} stars plus ${((totalDropChance*100)%100).toFixed(2)}% chance`;
+			let maxStars = `${parseInt((totalMaxDropChance*100)/100)} stars plus ${((totalMaxDropChance*100)%100).toFixed(2)}% chance`;
+
+			starfields = [
+				{name: 'Star Gen', value: `${emojis.find(e=>e.name==='instinct')} ${servant.starGen/10}%`, inline: true},
+				{name: 'Quick First', value: `${emojis.find(e=>e.name==='quickfirst')} ${!!args.quickfirst}`, inline: true},
+				{name: 'Critical', value: `${emojis.find(e=>e.name==='crit')} ${isCrit}`, inline: true},
+				{name: 'Cardmod', value: `${emojis.find(e=>e.name==='avatar')} ${cardMod}`, inline: true},
+				{name: 'Server Rate Mod', value: `${emojis.find(e=>e.name==='berserker')} ${serverRate}`, inline: true},
+				{name: 'Star Gen Mod', value: `${emojis.find(e=>e.name==='stargen')} ${starGen}`, inline: true},
+				{name: 'Card Star Value', value: `${emojis.find(e=>e.name==='starrateup')} ${cardStarValue}`, inline: true},
+				{name: 'Minroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${minStars}`},
+				{name: 'Maxroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${maxStars}`}
+			];
+
+			starGenEmbed = {
+				title: 'Star Gen:',
+				fields: starfields
+			};
+
+		}
 
 		if (args.enemyhp != null) {
 
@@ -612,6 +669,8 @@ async function test (servantId, argStr, servantName) {
 		let reply = [{embed: replyEmbed}];
 
 		if (args.enemyhp != undefined) reply = [{embed: replyEmbed}, {embed: npGainEmbed}];
+
+		if (args.stars) reply = [...reply, {embed: starGenEmbed}];
 
 		if (args.verbose) {
 
@@ -735,14 +794,19 @@ async function chain (servantId, argStr, servantName, match) {
 		attache = (card.np ? '' : '--' + card.name)  + (card.position ? ' --' + card.position : '') + (refund ? ` --hp=${minEnemyHp} ` : ' ');
 		testReply = await test(servantId, attache + baseStr + ' ' + chain[i].command, servantName);
 
-		if (Array.isArray(testReply))
+		if (Array.isArray(testReply)) {
+
 			testEmbed = testReply[0].embed;
+
+			if (testReply[1].embed.title !== 'NP Gain Calc:') refund = false;
+
+		}
 		else
 			testEmbed = testReply.embed;
 
 		let damageVals = testEmbed.description.replace(/(,)/g, '').match(/[0-9]+/g).map(el => parseInt(el)); //`**meanroll** (minroll to maxroll)`
 
-		if (refund) {
+		if (refund && testReply[1].embed.title === 'NP Gain Calc:') {
 
 			if (card.np) minrollTotalRefund = 0;
 
