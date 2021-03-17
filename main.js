@@ -544,12 +544,12 @@ async function test (servantId, argStr, servantName) {
 			npfields = [
 				{name: 'NP Gain', value: `${emojis.find(e=>e.name==='npgen')} ${servantNpGain/100}`, inline: true},
 				{name: 'Arts First', value: `${emojis.find(e=>e.name==='artsfirst')} ${!!artsFirst}`, inline: true},
-				{name: 'Critical', value: `${emojis.find(e=>e.name==='crit')} ${isCrit}`, inline: true}
+				{name: 'Critical', value: `${emojis.find(e=>e.name==='crit')} ${isCrit}`, inline: true},
 				{name: 'Cardmod', value: `${emojis.find(e=>e.name==='avatar')} ${cardMod}`, inline: true},
 				{name: 'Enemy Server Mod', value: `${emojis.find(e=>e.name==='berserker')} ${enemyServerMod}`, inline: true},
 				{name: 'NP Gain Mod', value: `${emojis.find(e=>e.name==='npgen')} ${npGen}`, inline: true},
 				{name: 'Card Attack Multiplier', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card) : emojis.find(e=>e.name===faceCard.toLowerCase())} ${cardValue}x`, inline: true},
-				{name: 'Card Refund Value', value: `${emojis.find(e=>e.name==='npbattery')} ${cardNpValue}`, inline: true},
+				{name: 'Card Refund Value', value: `${emojis.find(e=>e.name==='npbattery')} ${cardNpValue}`, inline: true}
 			];
 
 			descriptionString = '```\n|Hit | Damage |Enemy HP| Refund |\n';
