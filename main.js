@@ -552,7 +552,7 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Critical', value: `${emojis.find(e=>e.name==='crit')} ${isCrit}`, inline: true}
 			];
 
-			descriptionString = '```\n| Hit | Damage | Enemy HP |  Total NP |\n';
+			descriptionString = '```\n| Hit | Damage | Enemy HP |  Refund   |\n';
 
 			for (let i = 0; i < hits.length; i++) {
 
