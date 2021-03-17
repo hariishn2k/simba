@@ -552,7 +552,7 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Critical', value: `${emojis.find(e=>e.name==='crit')} ${isCrit}`, inline: true}
 			];
 
-			descriptionString = '```\n| Hit | Damage | Enemy HP | Refund |\n';
+			descriptionString = '```\n| Hit | Damage |Enemy HP| Refund |\n';
 
 			for (let i = 0; i < hits.length; i++) {
 
@@ -571,7 +571,7 @@ async function test (servantId, argStr, servantName) {
 				minNPRgen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isOverkill)/2)) / 100;
 				maxNPRegen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isMaxOverkill)/2)) / 100;
 
-				descriptionString += "| " + ((i+1)+'    ').substring(0, 4) + "| " +(Math.floor(thisHitMinDamage)+' '.repeat(7)).substring(0, 7) + "| " + (Math.floor(enemyHp)+' '.repeat(9)).substring(0, 9) + "| " + (minNPRgen.toFixed(2)+"%"+' '.repeat(7)).substring(0, 7) + "|\n";
+				descriptionString += "| " + ((i+1)+'    ').substring(0, 4) + "| " +(Math.floor(thisHitMinDamage)+' '.repeat(7)).substring(0, 7) + "|" + (Math.floor(enemyHp)+' '.repeat(8)).substring(0, 8) + "| " + (minNPRgen.toFixed(2)+"%"+' '.repeat(7)).substring(0, 7) + "|\n";
 
 			}
 
