@@ -571,7 +571,7 @@ async function test (servantId, argStr, servantName) {
 				minNPRgen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isOverkill)/2)) / 100;
 				maxNPRegen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isMaxOverkill)/2)) / 100;
 
-				descriptionString += "| " + ((i+1)+'    ').substring(0, 4) + "|" +(Math.floor(thisHitMinDamage)+'('+hit+'%)'+' '.repeat(10)).substring(0, 10) + "| " + (Math.floor(enemyHp)+' '.repeat(9)).substring(0, 9) + "| " + (minNPRgen.toFixed(2)+"%"+' '.repeat(10)).substring(0, 10) + "|\n";
+				descriptionString += "| " + ((i+1)+'    ').substring(0, 4) + "| " +(Math.floor(thisHitMinDamage)+' '.repeat(9)).substring(0, 9) + "| " + (Math.floor(enemyHp)+' '.repeat(9)).substring(0, 9) + "| " + (minNPRgen.toFixed(2)+"%"+' '.repeat(10)).substring(0, 10) + "|\n";
 
 			}
 
