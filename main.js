@@ -206,7 +206,7 @@ async function test (servantId, argStr, servantName) {
 		'--enemyservermod'	:	Number,
 		'--serverrate'		:	Number,
 		'--stargen'		:	Number,
-		'--stars'		:	Boolean,
+		//'--stars'		:	Boolean,
 		'--cardrefundvalue'	:	Number,
 		'--enemyhp'		:	Number,
 		'--bc'			:	Boolean,
@@ -540,8 +540,8 @@ async function test (servantId, argStr, servantName) {
 				overkillNo += isOverkill;
 				maxOverkillNo += isMaxOverkill;
 
-				totalDropChance += Math.min(f(f(servant.starGen/1000) + f(args.qf ? 0.2 : 0) + f(cardStarValue * f(1 + cardMod)) + f(serverRate) + f(starGen) + f(0.2 * +(isCrit)) + f(0.3 * +(isOverkill))), 3);
-				totalMaxDropChance += Math.min(f(f(servant.starGen/1000) + f(args.qf ? 0.2 : 0) + f(cardStarValue * f(1 + cardMod)) + f(serverRate) + f(starGen) + f(0.2 * +(isCrit)) + f(0.3 * +(isMaxOverkill))), 3);
+				totalDropChance += Math.min(f(f(servant.starGen/1000) + f((args.quickfirst &&  (faceCard !== 'NP')) ? 0.2 : 0) + f(cardStarValue * f(1 + cardMod)) + f(serverRate) + f(starGen) + f(0.2 * +(isCrit)) + f(0.3 * +(isOverkill))), 3);
+				totalMaxDropChance += Math.min(f(f(servant.starGen/1000) + f((args.quickfirst && (faceCard !== 'NP')) ? 0.2 : 0) + f(cardStarValue * f(1 + cardMod)) + f(serverRate) + f(starGen) + f(0.2 * +(isCrit)) + f(0.3 * +(isMaxOverkill))), 3);
 
 			}
 
@@ -560,6 +560,7 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Maxroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${maxStars}`}
 			];
 
+			console.log(args.quickfirst);
 			starGenEmbed = {
 				title: 'Star Gen:',
 				fields: starfields
@@ -670,7 +671,7 @@ async function test (servantId, argStr, servantName) {
 
 		if (args.enemyhp != undefined) reply = [{embed: replyEmbed}, {embed: npGainEmbed}];
 
-		if (args.stars) reply = [...reply, {embed: starGenEmbed}];
+		if (args.stars) reply = [{embed: replyEmbed}, {embed: starGenEmbed}];
 
 		if (args.verbose) {
 
@@ -715,7 +716,7 @@ async function test (servantId, argStr, servantName) {
 async function chain (servantId, argStr, servantName, match) {
 
 	let cards = match.match(/([bqa]|(np))/g), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant, chain = [{}, {}, {}];
-	let minEnemyHp, refund = false, minrollTotalRefund = 0;
+	let minEnemyHp, maxEnemyHp, refund = false, minrollTotalRefund = 0, maxrollTotalRefund = 0;
 
 	for (const key of Object.keys(servants)) {
 
@@ -783,36 +784,50 @@ async function chain (servantId, argStr, servantName, match) {
 
 		refund = true;
 		minEnemyHp = parseInt(minEnemyHp[0].split('=')[1]);
+		maxEnemyHp = parseInt(baseStr.match(/\s+--hp=\d+/g)[0].split('=')[1]);
 		baseStr = baseStr.replace(/\s+--hp=\d+/g, '');
 
 	}
 
 	for (let i = 0; i < 4; i++) {
 
-		let testReply, testEmbed, card = chain[i];
+		let testReply, testEmbed, card = chain[i], maxAttache, maxtestReply, maxTestEmbed;
 
 		attache = (card.np ? '' : '--' + card.name)  + (card.position ? ' --' + card.position : '') + (refund ? ` --hp=${minEnemyHp} ` : ' ');
+		maxAttache = (card.np ? '' : '--' + card.name)  + (card.position ? ' --' + card.position : '') + (refund ? ` --hp=${maxEnemyHp} ` : ' ');
 		testReply = await test(servantId, attache + baseStr + ' ' + chain[i].command, servantName);
+		maxTestReply = await test(servantId, maxAttache + baseStr + ' ' + chain[i].command, servantName);
 
 		if (Array.isArray(testReply)) {
 
 			testEmbed = testReply[0].embed;
+			maxTestEmbed = maxTestReply[0].embed;
 
 			if (testReply[1].embed.title !== 'NP Gain Calc:') refund = false;
 
 		}
-		else
+		else {
+
 			testEmbed = testReply.embed;
+			maxTestEmbed = maxTestReply.embed;
+
+		}
 
 		let damageVals = testEmbed.description.replace(/(,)/g, '').match(/[0-9]+/g).map(el => parseInt(el)); //`**meanroll** (minroll to maxroll)`
+		let maxDamageVals = maxTestEmbed.description.replace(/(,)/g, '').match(/[0-9]+/g).map(el => parseInt(el)); //`**meanroll** (minroll to maxroll)`
 
 		if (refund && testReply[1].embed.title === 'NP Gain Calc:') {
 
-			if (card.np) minrollTotalRefund = 0;
+			if (card.np) {
+
+				minrollTotalRefund = 0;
+				maxrollTotalRefund = 0;
+			}
 
 			minrollTotalRefund += parseFloat(testReply[1].embed.fields.find(el => el.name === 'Total Minroll Refund').value.slice(2));
-			//maxrollTotalRefund += parseFloat(testReply[1].embed.fields.find(el => el.name === 'Total Maxroll Refund').value.slice(2));
+			maxrollTotalRefund += parseFloat(maxTestReply[1].embed.fields.find(el => el.name === 'Total Maxroll Refund').value.slice(2));
 			minEnemyHp -= damageVals[1];
+			maxEnemyHp -= maxDamageVals[2];
 
 		}
 
@@ -838,7 +853,7 @@ async function chain (servantId, argStr, servantName, match) {
 		replyEmbed.fields = [
 			...replyEmbed.fields,
 			{name: 'Total Minroll Refund', value: `${emojis.find(e=>e.name==='npbattery')} **${minrollTotalRefund.toFixed(2)}%**`},
-			//{name: 'Total Maxroll Refund', value: `${emojis.find(e=>e.name==='npbattery')} **${maxrollTotalRefund.toFixed(2)}%**`}
+			{name: 'Total Maxroll Refund', value: `${emojis.find(e=>e.name==='npbattery')} **${maxrollTotalRefund.toFixed(2)}%**`}
 		];
 	}
 
