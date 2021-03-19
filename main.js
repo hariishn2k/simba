@@ -250,6 +250,7 @@ async function test (servantId, argStr, servantName) {
 		'--srr'			:	'--serverrate',
 		'--ecm'			:	'--extracardmodifier',
 		'--man'			:	'--human',
+		'--cd'			:	'--critdamage',
 
 		//Enemy classes
 		'--saber'		:	Boolean,
