@@ -162,7 +162,7 @@ client.on('message', async function (message) {
 		reply = `https://discord.gg/TKJmuCR`;
 	}
 	else if (command === 'wikia') {
-		reply = await wikia(restArgs.join(''));
+		reply = await wikia(restArgs.join(' ')).catch(res => res);
 	}
 
 	if (reply) {
@@ -886,13 +886,23 @@ async function wikia (search) {
 
 			res.on('data', function (chunk) {
 
-				data+= chunk;
+				data += chunk;
 
-				if (!resultFound) parser.write(chunk);
+				if (resultFound !== false) return;
+
+				parser.write(chunk);
 
 			});
 
-			res.on('end', _ => resolve(resultFound));
+			res.on('end', _ => {
+
+				let reply = resultFound;
+
+				resultFound = false;
+				reject(reply);
+
+			});
+
 			res.on('error', _ => reject(error));
 
 		});
