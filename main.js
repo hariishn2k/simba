@@ -11,6 +11,17 @@ const arg = require('arg');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+let resultFound = false;
+
+const https = require('https');
+const htmlparser2 = require("htmlparser2");
+const parser = new htmlparser2.Parser({
+	onopentag (name, attributes)  {
+	if (name === 'a' && attributes.class === 'unified-search__result__title') {
+	resultFound = '<' + attributes.href + '>';
+	}
+}});
+
 const nicknames = require('./nicknames.json');
 const config = process.env;
 const prefix = '!';
@@ -149,6 +160,9 @@ client.on('message', async function (message) {
 	}
 	else if (command === 'refund') {
 		reply = `https://discord.gg/TKJmuCR`;
+	}
+	else if (command === 'wikia') {
+		reply = await wikia(restArgs.join(''));
 	}
 
 	if (reply) {
@@ -860,6 +874,29 @@ async function chain (servantId, argStr, servantName, match) {
 
 	return {embed: replyEmbed};
 
+}
+
+async function wikia (search) {
+
+	return new Promise((resolve, reject) => {
+
+		https.get('https://fategrandorder.fandom.com/wiki/Special:Search?scope=internal&query=' + search.replace(/ /g, '+'), function(res) {
+
+			let data = '';
+
+			res.on('data', function (chunk) {
+
+				data+= chunk;
+
+				if (!resultFound) parser.write(chunk);
+
+			});
+
+			res.on('end', _ => resolve(resultFound));
+			res.on('error', _ => reject(error));
+
+		});
+	});
 }
 
 function parseCalculationString(s) {
