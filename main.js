@@ -433,7 +433,7 @@ async function test (servantId, argStr, servantName) {
 		else if (args.extra) {cardType = 1; hits = servant.hitsDistribution['extra'];}
 		else hits = servant.noblePhantasms[np].npDistribution;
 
-		let isCrit = (faceCard && args.critical) ? true : false;
+		let isCrit = ((faceCard && args.critical) && !args.extra) ? true : false;
 		let total = 0;
 		let cardValue = cardType;
 
@@ -501,7 +501,7 @@ async function test (servantId, argStr, servantName) {
 
 		if (faceCard) fD += f((args.extra ? 0 : 1) * atk * (args.bc ? 0.2 : 0));
 
-		val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + (args.extra ? 0 : cardMod)), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * (1 + +(isCrit && !args.extra))
+		val = f(atk) * f(servantClassRate) * f(advantage) * f(firstCardBonus + f(cardValue) * f(Math.max(f(1 + (args.extra ? 0 : cardMod)), 0))) * f(attributeAdvantage) * f(0.23) * f(npMulti) * (1 + (+isCrit))
 			* f(extraCardModifier) * f(Math.max(f(1 + atkMod - defMod), 0)) * f(Math.max(f(1 - specialDefMod), 0)) * f(Math.max(f(1 + pMod + (npMod * +(!faceCard))), 0.001)) * f(1 + seMod * +(!faceCard)) + fD;
 
 		if (args.arts) faceCard = 'Arts';
