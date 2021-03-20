@@ -5,7 +5,8 @@
   ],
   "2": [
     "artoria",
-    "saber"
+    "saber",
+    "seiba"
   ],
   "3": [
     "Salter",
@@ -15,7 +16,8 @@
   "4": [
     "lily",
     "saberlily",
-    "artorialily"
+    "artorialily",
+    "seibalily"
   ],
   "5": [
     "umu",
@@ -46,8 +48,7 @@
   "11": [
     "emiya",
     "shirou",
-    "feika",
-    "bestlooper"
+    "feika"
   ],
   "12": [
     "gil",
@@ -66,7 +67,8 @@
   ],
   "15": [
     "euryale",
-    "eury"
+    "eury",
+    "snek"
   ],
   "16": [
     "arash",
@@ -74,11 +76,13 @@
   ],
   "17": [
     "cu",
-    "doggo"
+    "doggo",
+    "honako"
   ],
   "18": [
     "eli",
-    "liz"
+    "liz",
+    "elizabeth"
   ],
   "19": [
     "benkei"
@@ -88,14 +92,18 @@
     "protodog"
   ],
   "21": [
-    "leonidas"
+    "leonidas",
+    "leo"
   ],
   "22": [
     "roma",
-    "romulus"
+    "romulus",
+    "ypose",
+    "\\o/"
   ],
   "23": [
-    "medusa"
+    "medusa",
+    "dusa"
   ],
   "24": [
     "georgios",
@@ -103,7 +111,9 @@
   ],
   "25": [
     "blackbeard",
-    "degen"
+    "degen",
+    "teach",
+    "jousef"
   ],
   "26": [
     "boudica"
@@ -118,7 +128,8 @@
     "alexander"
   ],
   "29": [
-    "marie"
+    "marie",
+    "cake"
   ],
   "30": [
     "martha"
@@ -128,7 +139,8 @@
   ],
   "32": [
     "gilles",
-    "casgilles"
+    "casgilles",
+    "cool"
   ],
   "33": [
     "hans"
@@ -140,7 +152,9 @@
   "35": [
     "clown",
     "mephi",
-    "mephisto"
+    "mephisto",
+    "honker",
+    "mephistopheles"
   ],
   "36": [
     "mozart"
@@ -152,36 +166,43 @@
   ],
   "38": [
     "cascu",
-    "castercu"
+    "castercu",
+    "casterdog"
   ],
   "39": [
     "regend",
     "kojiro",
     "sasaki",
-    "kojirou"
+    "kojirou",
+    "savioroffrance"
   ],
   "40": [
     "cahassan",
     "cursedarm",
     "cursed",
-    "cursearm"
+    "cursearm",
+    "cah"
   ],
   "41": [
     "stheno",
-    "spook"
+    "spook",
+    "snekface"
   ],
   "42": [
     "jingke",
-    "jing"
+    "jing",
+    "jans"
   ],
   "43": [
-    "sanson"
+    "sanson",
+    "sansonoid"
   ],
   "44": [
     "phantom"
   ],
   "45": [
-    "matahari"
+    "matahari",
+    "mata"
   ],
   "46": [
     "carmilla",
@@ -211,14 +232,16 @@
   "51": [
     "golden",
     "kintoki",
-    "sakata"
+    "sakata",
+    "zerktoki"
   ],
   "52": [
     "vlad",
     "berserkervlad"
   ],
   "53": [
-    "asterios"
+    "asterios",
+    "minotaur"
   ],
   "54": [
     "caligula"
@@ -233,7 +256,8 @@
   ],
   "57": [
     "eric",
-    "bloodyaxe"
+    "bloodyaxe",
+    "bloodaxe"
   ],
   "58": [
     "tamacat",
@@ -241,7 +265,9 @@
     "cat"
   ],
   "59": [
-    "jeanne"
+    "jeanne",
+    "jannu",
+    "jeannedarc"
   ],
   "60": [
     "orion",
@@ -264,11 +290,14 @@
     "hector"
   ],
   "65": [
-    "drake"
+    "drake",
+    "francis",
+    "francisdrake"
   ],
   "66": [
     "mary",
-    "yuri"
+    "yuri",
+    "annebonny&maryread"
   ],
   "67": [
     "medealily"
@@ -283,21 +312,25 @@
     "nobu",
     "ratarcher",
     "washija",
-    "oda"
+    "oda",
+    "nobunaga",
+    "nice"
   ],
   "70": [
     "scath",
     "shishou",
     "scathach",
     "lancerskadi",
-    "hag"
+    "hag",
+    "bba"
   ],
   "71": [
     "diarmuid",
     "deermud"
   ],
   "72": [
-    "fergus"
+    "fergus",
+    "rasengan"
   ],
   "73": [
     "santa",
@@ -320,7 +353,9 @@
     "mordred",
     "moedred",
     "moe",
-    "mochan"
+    "mochan",
+    "mo",
+    "chichiue"
   ],
   "77": [
     "tesla",
@@ -336,11 +371,11 @@
     "paracelsus"
   ],
   "80": [
-    "babbage",
-    "bba"
+    "babbage"
   ],
   "81": [
-    "hyde"
+    "hyde",
+    "jekyll"
   ],
   "82": [
     "fran",
@@ -348,16 +383,20 @@
     "unicorn"
   ],
   "83": [
-    "solomon"
+    "solomon",
+    "dead"
   ],
   "84": [
-    "arjuna"
+    "arjuna",
+    "juna",
+    "notjunao"
   ],
   "85": [
     "karna"
   ],
   "86": [
-    "mhx"
+    "mhx",
+    "forina"
   ],
   "87": [
     "fionn"
@@ -379,7 +418,8 @@
   "91": [
     "sabershiki",
     "void",
-    "voidshiki"
+    "voidshiki",
+    "shikisaber"
   ],
   "92": [
     "shiki",
@@ -402,21 +442,27 @@
   "96": [
     "dantes",
     "edgelord",
-    "dondo"
+    "dondo",
+    "edmond"
   ],
   "97": [
-    "nightingale"
+    "nightingale",
+    "gale"
   ],
   "98": [
     "cualter",
     "culter",
-    "calter"
+    "calter",
+    "kuroinu",
+    "blackdog"
   ],
   "99": [
-    "medb"
+    "medb",
+    "thot"
   ],
   "100": [
-    "helena"
+    "helena",
+    "lolibaba"
   ],
   "101": [
     "rama"
@@ -439,10 +485,14 @@
     "billy"
   ],
   "106": [
-    "jalter"
+    "jalter",
+    "jeannedarcalter",
+    "jeannealter"
   ],
   "107": [
-    "angra"
+    "angra",
+    "mango",
+    "angramainyu"
   ],
   "108": [
     "iskandar"
@@ -458,11 +508,14 @@
     "100personas"
   ],
   "111": [
-    "iri"
+    "iri",
+    "irisviel"
   ],
   "112": [
     "ratassassin",
-    "shuten"
+    "shuten",
+    "asmroni",
+    "asmr"
   ],
   "113": [
     "xuanzang",
@@ -477,7 +530,8 @@
   "115": [
     "ridertoki",
     "kintokirider",
-    "goldenrider"
+    "goldenrider",
+    "rintoki"
   ],
   "116": [
     "banana",
@@ -490,7 +544,9 @@
   ],
   "118": [
     "ozy",
-    "ozymandias"
+    "ozymandias",
+    "zawarudo",
+    "dio"
   ],
   "119": [
     "lartoria",
@@ -512,9 +568,13 @@
   "123": [
     "gawain"
   ],
-  "124": [],
+  "124": [
+    "serenity"
+  ],
   "125": [
-    "touta"
+    "touta",
+    "tawara",
+    "rice"
   ],
   "126": [
     "bedi",
@@ -545,7 +605,8 @@
     "castermarie"
   ],
   "131": [
-    "summeranne"
+    "summeranne",
+    "summermary"
   ],
   "132": [
     "morider",
@@ -568,7 +629,8 @@
     "fiteme",
     "rulermartha",
     "summermartha",
-    "martharuler"
+    "martharuler",
+    "punchsaint"
   ],
   "136": [
     "illya"
@@ -598,7 +660,11 @@
     "jalterlily"
   ],
   "142": [
-    "ishtar"
+    "ishtar",
+    "useless",
+    "bakanomegami",
+    "aqua",
+    "forgotyourbuff"
   ],
   "143": [
     "clay",
@@ -628,7 +694,8 @@
   ],
   "148": [
     "taiga",
-    "jaguarman"
+    "jaguarman",
+    "jaguar"
   ],
   "149": [],
   "150": [
@@ -636,10 +703,15 @@
     "bustermeme",
     "memelin"
   ],
-  "151": [],
-  "152": [],
+  "151": [
+    "goetia"
+  ],
+  "152": [
+    "solomon"
+  ],
   "153": [
-    "musashi"
+    "musashi",
+    "sushi"
   ],
   "154": [
     "kinghassan",
@@ -648,12 +720,15 @@
   ],
   "155": [
     "ecchan",
-    "mhxa"
+    "mhxa",
+    "bx"
   ],
   "156": [
     "moriarty",
     "professor",
-    "papa"
+    "papa",
+    "evilboomer",
+    "boomer"
   ],
   "157": [
     "emiyaalter",
@@ -661,15 +736,17 @@
   ],
   "158": [
     "lobo",
-    "hessianlobo"
+    "hessianlobo",
+    "hessian"
   ],
   "159": [
     "yanqing",
     "sassyshin"
   ],
   "160": [
-    "arthut",
-    "protoarthur"
+    "protoarthur",
+    "protosaber",
+    "arthur"
   ],
   "161": [
     "hiji",
@@ -698,12 +775,12 @@
     "smugnun"
   ],
   "168": [
-    "scheherezade",
-    "ratcaster",
-    "nightlesscaster"
+    "beastiii/r"
   ],
   "169": [
-    "schez"
+    "schez",
+    "nightlesscaster",
+    "scheherazade"
   ],
   "170": [
     "nightlessassassin",
@@ -717,7 +794,8 @@
     "ceo"
   ],
   "172": [
-    "columbus"
+    "columbus",
+    "christopher"
   ],
   "173": [
     "sherlock",
@@ -748,7 +826,8 @@
     "berserkernobu",
     "zerknobu",
     "nobuzerk",
-    "ratzerker"
+    "ratzerker",
+    "summernobu"
   ],
   "179": [
     "maid",
@@ -765,7 +844,8 @@
     "raikoulancer",
     "summermama",
     "summerraikou",
-    "lancermama"
+    "lancermama",
+    "laikou"
   ],
   "182": [
     "riderishtar",
@@ -834,13 +914,15 @@
   "196": [
     "gar",
     "eresh",
-    "ereshkigal"
+    "ereshkigal",
+    "<:ereshkighuhl:783154138761527348>"
   ],
   "197": [
     "santaaltera",
     "archeraltera",
     "attilathesanta",
-    "sheep"
+    "sheep",
+    "santera"
   ],
   "198": [
     "oei",
@@ -901,7 +983,8 @@
   "211": [
     "ryouma",
     "ryoma",
-    "oryou"
+    "oryou",
+    "sakamoto"
   ],
   "212": [
     "napo",
@@ -913,12 +996,16 @@
   ],
   "214": [
     "valkyrie",
-    "valk"
+    "valk",
+    "thrud",
+    "hildr",
+    "ortlinde"
   ],
   "215": [
     "skadi",
     "cba",
-    "quickmeme"
+    "quickmeme",
+    "humanrights2"
   ],
   "216": [
     "summerjeanne",
@@ -957,7 +1044,8 @@
   "223": [
     "saberdiarmuid",
     "diarmuidsaber",
-    "saberdeermud"
+    "saberdeermud",
+    "sabermuid"
   ],
   "224": [
     "sitonai",
@@ -967,7 +1055,8 @@
     "casshuten",
     "castershuten",
     "cashew",
-    "casshu"
+    "casshu",
+    "ratcaster"
   ],
   "226": [
     "xy",
@@ -1006,12 +1095,14 @@
   ],
   "232": [
     "buttmante",
-    "bradamante"
+    "bradamante",
+    "bradass"
   ],
   "233": [
     "rulerquetz",
     "santaquetz",
-    "quetzalcoatlsanta"
+    "quetzalcoatlsanta",
+    "samba"
   ],
   "234": [
     "benienma",
@@ -1030,7 +1121,8 @@
   ],
   "237": [
     "murasaki",
-    "murasakishikibu"
+    "murasakishikibu",
+    "awawawa"
   ],
   "238": [
     "kingprotea",
@@ -1051,7 +1143,9 @@
   ],
   "242": [
     "ohoho",
-    "luvia"
+    "luvia",
+    "astraea",
+    "notastarte"
   ],
   "243": [
     "gray"
@@ -1066,12 +1160,13 @@
   ],
   "246": [
     "tell",
-    "williantell"
+    "williamtell"
   ],
   "247": [
     "godjuna",
     "arjunaalter",
-    "junao"
+    "junao",
+    "kamida"
   ],
   "248": [
     "hotwheels",
@@ -1100,13 +1195,13 @@
     "kenshin",
     "echigo",
     "uesugi",
-    "nagaokagetora",
-    "astrea"
+    "nagaokagetora"
   ],
   "253": [
     "lolivinci",
     "ridervinci",
-    "davincirider"
+    "davincirider",
+    "dvr"
   ],
   "254": [
     "jason",
@@ -1127,17 +1222,21 @@
   "258": [
     "thegong",
     "chengong",
-    "yeet"
+    "yeet",
+    "gong"
   ],
   "259": [
     "charlotte"
   ],
-  "260": [],
+  "260": [
+    "salome"
+  ],
   "261": [
     "jetsashi",
     "udon",
     "zerksushi",
-    "usa"
+    "usa",
+    "zerksashi"
   ],
   "262": [
     "archakabehime",
@@ -1146,7 +1245,8 @@
   ],
   "263": [
     "ridermilla",
-    "carmillarider"
+    "carmillarider",
+    "summercarmilla"
   ],
   "264": [
     "hokusaber",
@@ -1157,7 +1257,8 @@
   "265": [
     "bunnytoria",
     "artoriaruler",
-    "artoriapendragonruler"
+    "artoriapendragonruler",
+    "bunny"
   ],
   "266": [
     "penguinmelt",
@@ -1178,10 +1279,12 @@
     "spaceishtar",
     "astarte",
     "astaroth",
-    "spishtar"
+    "spishtar",
+    "notastraea"
   ],
   "269": [
-    "calamityjane"
+    "calamityjane",
+    "jane"
   ],
   "270": [
     "saberstolfo",
@@ -1193,12 +1296,15 @@
     "nightingale(santa)",
     "nightingalesanta",
     "archergale",
-    "archernightingale"
+    "archernightingale",
+    "santagale"
   ],
   "272": [
     "superorion",
     "superhumanorion",
-    "chadorion"
+    "chadorion",
+    "supahman",
+    "superman"
   ],
   "273": [
     "mandricardo",
@@ -1211,7 +1317,8 @@
   "275": [
     "haohao",
     "yangguifei",
-    "yuyu"
+    "yuyu",
+    "yang"
   ],
   "276": [
     "switch",
@@ -1238,13 +1345,16 @@
   ],
   "280": [
     "romulusquirinus",
-    "quirinus"
+    "quirinus",
+    "superroma"
   ],
   "281": [
     "voyager",
     "pran",
     "littleprince",
-    "voyajar"
+    "voyajar",
+    "voyvoy",
+    "voy"
   ],
   "282": [
     "dinowaifu",
@@ -1259,7 +1369,9 @@
   "284": [
     "castoria",
     "castria",
-    "artoriacaster"
+    "artoriacaster",
+    "humanrights3",
+    "artsmeme"
   ],
   "285": [
     "summerkiara",
@@ -1276,7 +1388,8 @@
   "287": [
     "summerbryn",
     "brynzerker",
-    "brynhildr(berserker)"
+    "brynhildr(berserker)",
+    "zerkbryn"
   ],
   "288": [
     "summeryu",
@@ -1287,12 +1400,14 @@
   ],
   "289": [
     "summerabby",
-    "abigailwilliams(summer)"
+    "abigailwilliams(summer)",
+    "abbysummer"
   ],
   "290": [
     "summertomoe",
     "tomoesaber",
-    "tomoegozen(saber)"
+    "tomoegozen(saber)",
+    "sabertomoe"
   ],
   "291": [
     "murasakirider",
@@ -1306,11 +1421,11 @@
     "saitōhajime",
     "vergil",
     "saitohajime",
-    "saito"
+    "saito",
+    "hajime"
   ],
   "294": [
     "nobukatsu",
-    "oda",
     "odanobukatsu"
   ],
   "295": [

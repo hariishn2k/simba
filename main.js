@@ -131,15 +131,15 @@ client.on('message', async function (message) {
 		}
 	}
 	else if (command === 'addname') {
-		if (/*message.channel.id === config.TOHSAKA_ID ||*/ message.author.id === config.VLAD) {
+		if (message.author.id === '677587347075760165') {
 
-			[id, nickname] = restArgs;console.log(id, nickname, id in nicknames);
+			[id, nickname] = restArgs;
+			console.log(id, nickname, id in nicknames);
 
 			if (id in nicknames) {
 				if (!nicknames[id].includes(nickname)) {
 					nicknames[id].push(nickname);
 					reply = `Set ${id}: ${nickname}`;
-					//console.log(`${id}, ${nickname}, ${JSON.stringify(nicknames, null, 2)}`);
 					require('fs').writeFileSync('./nicknames.json', JSON.stringify(nicknames, null, 2));
 				}
 			}
