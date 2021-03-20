@@ -11,16 +11,9 @@ const arg = require('arg');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-let resultFound = false;
-
+let document;
+const {JSDOM}  = require('jsdom');
 const https = require('https');
-const htmlparser2 = require("htmlparser2");
-const parser = new htmlparser2.Parser({
-	onopentag (name, attributes)  {
-	if (name === 'a' && attributes.class === 'unified-search__result__title') {
-	resultFound = '<' + attributes.href + '>';
-	}
-}});
 
 const nicknames = require('./nicknames.json');
 const config = process.env;
@@ -880,7 +873,7 @@ async function wikia (search) {
 
 	return new Promise((resolve, reject) => {
 
-		https.get('https://fategrandorder.fandom.com/wiki/Special:Search?scope=internal&query=' + search.replace(/ /g, '+'), function(res) {
+		https.get('https://www.google.com/search?q=site%3Afategrandorder.fandom.com+' + search.replace(/ /g, '+'), function(res) {
 
 			let data = '';
 
@@ -888,23 +881,14 @@ async function wikia (search) {
 
 				data += chunk;
 
-				if (resultFound !== false) return;
-
-				parser.write(chunk);
-
 			});
 
 			res.on('end', _ => {
 
-				let reply = resultFound;
-
-				resultFound = false;
-				reject(reply);
+				document = (new JSDOM(data, {pretendToBeVisual: true})).window.document;
+				resolve('<' + document.querySelector('a[href^="/url?q=https://fategrandorder.fandom.com/wiki/"]').href.slice(7).split('&')[0]+ '>');
 
 			});
-
-			res.on('error', _ => reject(error));
-
 		});
 	});
 }
