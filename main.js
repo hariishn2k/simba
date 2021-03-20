@@ -886,7 +886,8 @@ async function wikia (search) {
 			res.on('end', _ => {
 
 				document = (new JSDOM(data, {pretendToBeVisual: true})).window.document;
-				resolve('<' + document.querySelector('a[href^="/url?q=https://fategrandorder.fandom.com/wiki/"]').href.slice(7).split('&')[0]+ '>');
+				console.log('<' + decodeURI(decodeURI(document.querySelector('a[href^="/url?q=https://fategrandorder.fandom.com/wiki/"]').href.slice(7).split('&')[0])) + '>');
+				resolve('<' + decodeURI(decodeURI(document.querySelector('a[href^="/url?q=https://fategrandorder.fandom.com/wiki/"]').href.slice(7).split('&')[0])) + '>');
 
 			});
 		});
