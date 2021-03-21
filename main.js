@@ -823,7 +823,7 @@ async function chain (servantId, argStr, servantName, match) {
 			testEmbed = testReply[0].embed;
 			maxTestEmbed = maxTestReply[0].embed;
 
-			if (testReply[1].embed.title !== 'NP Gain Calc:') refund = false;
+			if (testReply[1]?.embed.title !== 'NP Gain Calc:') refund = false;
 
 		}
 		else {
