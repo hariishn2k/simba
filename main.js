@@ -390,6 +390,12 @@ async function test (servantId, argStr, servantName) {
 		let npMulti = 0;
 		let npFns = servant.noblePhantasms[np].functions;
 
+		if (servant.collectionNo === 1) {
+
+			atk = (args.level ? servant.atkGrowth[args.level - 1] : servant.atkGrowth[79]) + (args.fou ?? 1000) + (args.ce ?? 0);
+
+		}
+
 		if (npLevel > 4) {
 
 			warnMessage += "NP Level cannot be greater than 5, setting to 5 (default).\n";
@@ -725,7 +731,6 @@ async function chain (servantId, argStr, servantName, match) {
 
 	let cards = match.match(/([bqa]|(np))/g), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant, chain = [{}, {}, {}];
 	let minEnemyHp, maxEnemyHp, refund = false, minrollTotalRefund = 0, maxrollTotalRefund = 0;
-	let cardChain = cards.includes('np'), startEnemyHp;
 
 	for (const key of Object.keys(servants)) {
 
@@ -794,7 +799,6 @@ async function chain (servantId, argStr, servantName, match) {
 		refund = true;
 		minEnemyHp = parseInt(minEnemyHp[0].split('=')[1]);
 		maxEnemyHp = parseInt(baseStr.match(/\s+--hp=\d+/g)[0].split('=')[1]);
-		startEnemyHp = minEnemyHp;
 		baseStr = baseStr.replace(/\s+--hp=\d+/g, '');
 
 	}
@@ -838,10 +842,6 @@ async function chain (servantId, argStr, servantName, match) {
 			maxrollTotalRefund += parseFloat(maxTestReply[1].embed.fields.find(el => el.name === 'Total Maxroll Refund').value.slice(2));
 			minEnemyHp -= damageVals[1];
 			maxEnemyHp -= maxDamageVals[2];
-
-			if (cardChain && (minEnemyHp < (startEnemyHp/2))) minrollTotalRefund *= 1.5;
-
-			if (cardChain && (maxEnemyHp < (startEnemyHp/2))) maxrollTotalRefund *= 1.5;
 
 		}
 
