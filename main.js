@@ -422,7 +422,13 @@ async function test (servantId, argStr, servantName) {
 		let busterChainMod = (args.bc ? (0.2 * atk) : 0);
 		let firstCardBonus = 0;
 
-		if (npMulti === 0 && !faceCard) return `**${servantName}** NP does not deal damage!`;
+		if (npMulti === 0 && !faceCard)
+			return {
+				embed: {
+					title: `**${servantName}** NP does not deal damage!`,
+					description: '0 (0 to 0)'
+				}
+			};
 
 		if (args.defmod && (defMod < -1 || defMod > 1)) {
 			warnMessage += 'Defense (de)buffs cannot exceed the range [-100%, 100%]. Setting enemy defense modifier to 0.\n';
@@ -830,7 +836,7 @@ async function chain (servantId, argStr, servantName, match) {
 		let damageVals = testEmbed.description.replace(/(,)/g, '').match(/[0-9]+/g).map(el => parseInt(el)); //`**meanroll** (minroll to maxroll)`
 		let maxDamageVals = maxTestEmbed.description.replace(/(,)/g, '').match(/[0-9]+/g).map(el => parseInt(el)); //`**meanroll** (minroll to maxroll)`
 
-		if (refund && testReply[1].embed.title === 'NP Gain Calc:') {
+		if (refund && testReply[1]?.embed.title === 'NP Gain Calc:') {
 
 			if (card.np) {
 
