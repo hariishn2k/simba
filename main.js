@@ -343,7 +343,7 @@ async function test (servantId, argStr, servantName) {
 
 		nps = Object.keys(servants[Object.keys(servants).find(x => ((servants[x].collectionNo === parseInt(servantId)) && 'noblePhantasms' in servants[x]))].noblePhantasms);
 
-		if (parseInt(servantId) === 268) np = nps[1];
+		if (parseInt(servantId) === 268) np = nps[0];
 
 		if (args.str != null) {
 			if (args.str > 0) np = nps[nps.length - 1];
@@ -600,8 +600,10 @@ async function test (servantId, argStr, servantName) {
 				case 'quick': cardNpValue = 1; break;
 				case 'buster': cardNpValue = 0; break;
 				case 'extra': cardNpValue = 1; break;
-				default: cardValue = 1; break;
+				default: cardNpValue = 1; break;
 			}
+
+			cardNpValue = args.cardrefundvalue ?? cardNpValue;
 
 			if (args.second && (faceCard !== 'NP')) cardNpValue *= 1.5;
 			if (args.third && (faceCard !== 'NP')) cardNpValue *= 2;
