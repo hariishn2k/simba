@@ -241,6 +241,7 @@ async function test (servantId, argStr, servantName) {
 		'--cmv'			:	'--cardvalue',
 		'--npv'			:	'--npvalue',
 		'--d'			:	'--defmod',
+		'--def'			:	'--defmod',
 		'--fd'			:	'--flatdamage',
 		'--se'			:	'--semod',
 		'--p'			:	'--pmod',
@@ -430,9 +431,21 @@ async function test (servantId, argStr, servantName) {
 				}
 			};
 
-		if (args.defmod && (defMod < -1 || defMod > 1)) {
-			warnMessage += 'Defense (de)buffs cannot exceed the range [-100%, 100%]. Setting enemy defense modifier to 0.\n';
-			defMod = 0;
+		if (args.defmod) {
+
+			if (defMod < -1) {
+
+				warnMessage += 'Defense (de)buffs cannot exceed the range [-100%, 100%]!\n';
+				defMod = -1;
+
+			}
+			else if (defMod > 1) {
+
+
+				warnMessage += 'Defense (de)buffs cannot exceed the range [-100%, 100%]!\n';
+				defMod = 1;
+
+			}
 		}
 
 		let passiveSkills = passiveSkillSet[servantId];
