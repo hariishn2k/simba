@@ -155,7 +155,10 @@ client.on('message', async function (message) {
 		reply = `https://discord.gg/TKJmuCR`;
 	}
 	else if (command === 'wikia') {
-		reply = await wikia(restArgs.join(' ')).catch(res => res);
+		reply = await wikia(restArgs.join(' '));
+	}
+	else if (command === 'google') {
+		reply = await bing(restArgs.join(' '));
 	}
 
 	if (reply) {
@@ -931,6 +934,43 @@ async function wikia (search) {
 		});
 
 
+	});
+}
+
+async function bing (search) {
+
+	return new Promise((resolve, reject) => {
+
+		https.get('https://www.bing.com/search?q=' + search.replace(/ /g, '+'), function(res) {
+
+			let data = '';
+
+			res.on('data', function (chunk) {
+
+				data += chunk;
+
+			});
+
+			res.on('end', _ => {
+
+				const {document} = (new JSDOM(data, {pretendToBeVisual: true})).window;
+
+				let reply = '';
+
+				try {
+
+					reply = '<' + decodeURI(decodeURI(document.querySelector('main[aria-label="Search Results"] a').href)) + '>';
+					resolve(reply);
+
+				} catch(err) {
+
+					resolve(err.message);
+					resolve('Error finding result for <https://www.google.com/search?q=' + search.replace(/ /g, '+') + '>');
+
+				}
+
+			});
+		});
 	});
 }
 
