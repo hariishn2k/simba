@@ -2317,10 +2317,10 @@
     }
   },
   "306": {
-     "cardmod": {
-      "arts": 0.0,
+    "cardmod": {
+      "arts": 0,
       "buster": 12.0,
-      "quick": 0.0
+      "quick": 0
     }
- }
+  }
 }

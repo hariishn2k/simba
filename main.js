@@ -913,10 +913,24 @@ async function wikia (search) {
 			res.on('end', _ => {
 
 				document = (new JSDOM(data, {pretendToBeVisual: true})).window.document;
-				resolve('<' + decodeURI(decodeURI(document.querySelector('a[href^="/url?q=https://fategrandorder.fandom.com/wiki/"]').href.slice(7).split('&')[0])) + '>');
+
+				let reply = '';
+
+				try {
+
+					reply = '<' + decodeURI(decodeURI(document.querySelector('a[href^="/url?q=https://fategrandorder.fandom.com/wiki/"]').href.slice(7).split('&')[0])) + '>';
+					resolve(reply);
+
+				} catch(err) {
+
+					resolve('Error finding result for <https://www.google.com/search?q=site%3Afategrandorder.fandom.com+' + search.replace(/ /g, '+') + '>');
+
+				}
 
 			});
 		});
+
+
 	});
 }
 
