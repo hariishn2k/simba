@@ -964,8 +964,7 @@ async function bing (search) {
 
 				} catch(err) {
 
-					resolve(err.message);
-					resolve('Error finding result for <https://www.google.com/search?q=' + search.replace(/ /g, '+') + '>');
+					resolve('Error finding result for <https://www.bing.com/search?q=' + search.replace(/ /g, '+') + '>');
 
 				}
 
