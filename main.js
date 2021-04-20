@@ -959,7 +959,7 @@ async function bing (search) {
 
 				try {
 
-					reply = '<' + decodeURI(decodeURI(document.querySelector('main[aria-label="Search Results"] a').href)) + '>';
+					reply = '<' + decodeURI(decodeURI(document.querySelector('main[aria-label="Search Results"] h2 a').href)) + '>';
 					resolve(reply);
 
 				} catch(err) {
