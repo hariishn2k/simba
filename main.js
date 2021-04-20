@@ -627,9 +627,9 @@ async function test (servantId, argStr, servantName) {
 			switch (enemyClass) {
 				case 'rider': enemyServerMod = 1.1; break;
 				case 'caster': enemyServerMod = 1.2; break;
-				case 'assasin': enemyServerMod = 0.9; break;
+				case 'assassin': enemyServerMod = 0.9; break;
 				case 'berserker': enemyServerMod = 0.8; break;
-				case 'mooncancer': enemyServerMod = 1.2; break;
+				case 'moonCancer': enemyServerMod = 1.2; break;
 				default: enemyServerMod = 1; break;
 			}
 
@@ -735,7 +735,7 @@ async function test (servantId, argStr, servantName) {
 			];
 
 			newfields.push({name: 'ATKMod', value: `${emojis.find(e=>e.name==='charisma')} ${atkMod*100}%`, inline: true});
-			newfields.push({name: 'DEFMod', value: `${emojis.find(e=>e.name==='defup')} ${-defMod*100}%`, inline: true});
+			newfields.push({name: 'DEFMod', value: `${emojis.find(e=>e.name==='defup')} ${defMod*100}%`, inline: true});
 			newfields.push({name: 'NP Mod', value: `${emojis.find(e=>e.name==='npmod')} ${npMod*100}%`, inline: true});
 			newfields.push({name: 'Supereffective Mod', value: `${emojis.find(e=>e.name==='overcharge')} ${(1 + seMod)}x`, inline: true});
 			newfields.push({name: 'PowerMod', value: `${emojis.find(e=>e.name==='pmod')}${emojis.find(e=>e.name==='crit')}  ${pMod*100}%`, inline: true});
