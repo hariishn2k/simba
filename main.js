@@ -571,8 +571,8 @@ async function test (servantId, argStr, servantName) {
 
 				enemyHp -= thisHitMinDamage;
 				maxrollEnemyHp -= thisHitMaxDamage;
-				isOverkill = +(enemyHp < 0);
-				isMaxOverkill = +(maxrollEnemyHp < 0);
+				isOverkill = +(thisHitMinDamage > (0.5 * enemyHp));
+				isMaxOverkill = +(thisHitMaxDamage > (0.5 * maxrollEnemyHp));
 				overkillNo += isOverkill;
 				maxOverkillNo += isMaxOverkill;
 
@@ -654,14 +654,14 @@ async function test (servantId, argStr, servantName) {
 
 				let hit = hits[i], thisHitMinDamage = f(minrollTotalVal * f(hit) / f(100)), thisHitMaxDamage = Math.floor(f(maxrollTotalVal * f(hit) / f(100)));
 
+				isOverkill = +(thisHitMinDamage > (0.5 * enemyHp));
+				isMaxOverkill = +(thisHitMaxDamage > (0.5 * maxrollEnemyHp));
 				enemyHp -= thisHitMinDamage;
 				maxrollEnemyHp -= thisHitMaxDamage;
-				isOverkill = +(enemyHp < 0);
-				isMaxOverkill = +(maxrollEnemyHp < 0);
 				overkillNo += isOverkill;
 				maxOverkillNo += isMaxOverkill;
 
-				baseNPGain = f(servantNpGain) * f(f((artsFirst && faceCard !== 'NP') ? 1 : 0) +  f(f(cardNpValue) * f(1 + cardMod)))
+				baseNPGain = f(servantNpGain) * f(f((artsFirst && faceCard !== 'NP') ? 1 : 0) +  f(f(cardNpValue) * f(1 + (args.extra ? 0 : cardMod))))
 						* f(enemyServerMod) * f(1 + npGen);
 
 				minNPRgen += Math.floor(Math.floor(baseNPGain * f(1 + (+isCrit))) * f((2 + isOverkill)/2)) / 100;
@@ -669,6 +669,7 @@ async function test (servantId, argStr, servantName) {
 
 				descriptionString += "| " + ((i+1)+'   ').substring(0, 3) + "| " +(Math.floor(thisHitMinDamage)+' '.repeat(7)).substring(0, 7) + "|" + (Math.floor(enemyHp)+' '.repeat(8)).substring(0, 8) + "| " + (minNPRgen.toFixed(2)+"%"+' '.repeat(7)).substring(0, 7) + "|\n";
 
+				console.log(`thisHitDamage: ${thisHitMaxDamage},\nremainingHp: ${maxrollEnemyHp},\nisOverkill: ${isMaxOverkill}\n`);
 			}
 
 			descriptionString += '```';
@@ -872,7 +873,7 @@ async function chain (servantId, argStr, servantName, match) {
 		totalDamage += damageVals[0];
 		minrollTotal += damageVals[1];
 		maxrollTotal += damageVals[2];
-		title = 'Damage for' + testEmbed.title.split(' ').slice(3).join(' ') + ':';
+		title = 'Damage for ' + testEmbed.title.split(' ').slice(3).join(' ') + ':';
 		thumbnail = testEmbed.thumbnail;
 		description += `${card.np ? emojis.find(e=>e.name==='nplewd') : emojis.find(e=>e.name===card.name)} **${damageVals[0].toLocaleString()}**\n`;
 
