@@ -419,7 +419,6 @@ async function test (servantId, argStr, servantName) {
 			}
 		}
 
-		args.npvalue = 0.5;
 		npMulti = f(args.npvalue ?? npMulti)/f(100);
 
 		let faceCard = (args.extra || args.buster || args.arts || args.quick) ? true : false;
