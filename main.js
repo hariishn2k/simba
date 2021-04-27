@@ -316,9 +316,6 @@ async function test (servantId, argStr, servantName) {
 		else if (!('noblePhantasms' in servants[key])) continue;
 		else servant = servants[key];
 
-		servantName = servant.name;
-		servantName = servantName[0].toUpperCase() + servantName.slice(1);
-
 		if (args.npLevel > 4) {
 			warnMessage += 'NP Level cannot be greater than 5. Setting NP level to 5.\n';
 			args.npLevel = 4;
