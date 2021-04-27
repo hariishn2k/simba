@@ -2322,5 +2322,22 @@
       "buster": 12.0,
       "quick": 0
     }
+  },
+  "307": {
+    "cardmod": {
+      "arts": 7.0,
+      "buster": 0,
+      "quick": 0
+    },
+    "stargen": {
+      "value": 30.0
+    }
+  },
+  "308": {
+    "cardmod": {
+      "arts": 0,
+      "buster": 6.0,
+      "quick": 0
+    }
   }
 }

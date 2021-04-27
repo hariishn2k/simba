@@ -954,7 +954,7 @@ async function bing (search) {
 
 			res.on('end', _ => {
 
-				const {document} = (new JSDOM(data, {pretendToBeVisual: true})).window;
+				({document} = (new JSDOM(data, {pretendToBeVisual: true})).window);
 
 				let reply = '';
 
