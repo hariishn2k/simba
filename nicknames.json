@@ -506,7 +506,9 @@
   "110": [
     "hundredface",
     "100faces",
-    "100personas"
+    "100personas",
+    "hundred",
+    "hfh"
   ],
   "111": [
     "iri",
@@ -1097,7 +1099,8 @@
   "232": [
     "buttmante",
     "bradamante",
-    "bradass"
+    "bradass",
+    "brad"
   ],
   "233": [
     "rulerquetz",
@@ -1480,6 +1483,11 @@
   ],
   "306": [
     "galatea"
+  ],
+  "307": [
+    "crane"
+  ],
+  "308": [
+    "idolx"
   ]
-
 }

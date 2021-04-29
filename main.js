@@ -131,7 +131,7 @@ client.on('message', async function (message) {
 		}
 	}
 	else if (command === 'addname') {
-		if (message.author.id === '677587347075760165') {
+		if (message.author.id === '677587347075760165' || message.author.id === '406537966161362955' || message.author.id === '200914311202209793') {
 
 			[id, nickname] = restArgs;
 			console.log(id, nickname, id in nicknames);
@@ -339,6 +339,8 @@ async function test (servantId, argStr, servantName) {
 			servantName = NAServants[Object.keys(NAServants).find(x=>NAServants[x].collectionNo === parseInt(servantId))].name;
 
 		}
+
+		servantName = servantName[0].toUpperCase() + servantName.slice(1);
 
 		np = nps[nps.length - 1];
 
