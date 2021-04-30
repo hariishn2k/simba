@@ -812,6 +812,14 @@ async function chain (servantId, argStr, servantName, match) {
 
 		let cardNo = command[0] - 1;
 
+		chain[cardNo].command = '';
+
+	}
+
+	for (const command of commands) {
+
+		let cardNo = command[0] - 1;
+
 		chain[cardNo].command += command.slice(2) + " ";
 
 		if (chain.every((val, i, a) => (val.name === a[0].name))) chain[3].command += ' --ecm=3.5 ';
