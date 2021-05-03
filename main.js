@@ -605,7 +605,7 @@ async function test (servantId, argStr, servantName) {
 
 		if (args.enemyhp != null) {
 
-			let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel], minNPRgen = 0, maxNPRegen = 0, enemyHp = (args.enemyhp ?? 0), maxrollEnemyHp = (args.enemyhp ?? 0);
+			let servantNpGain = servant.noblePhantasms[np].npGain.np[npLevel], minNPRgen = 0, maxNPRegen = 0, enemyHp = (args.enemyhp ?? 0), maxrollEnemyHp = (args.enemyhp ?? 0), initEnemyHp = enemyHp;
 			let descriptionString = '', npfields = [];
 			let cardNpValue = 0,enemyServerMod = 0, artsFirst = (args.artsfirst) ? 1 : 0;
 			let isOverkill = 0, isMaxOverkill = 0, baseNPGain = 0, minrollTotalVal = 0.9 * f(total - fD) + fD, maxrollTotalVal = 1.099 * f(total - fD) + fD, overkillNo = 0, maxOverkillNo = 0;
@@ -653,12 +653,12 @@ async function test (servantId, argStr, servantName) {
 
 				let hit = hits[i], thisHitMinDamage = f(minrollTotalVal * f(hit) / f(100)), thisHitMaxDamage = Math.floor(f(maxrollTotalVal * f(hit) / f(100)));
 
-				isOverkill = +(thisHitMinDamage > (0.5 * enemyHp));
-				isMaxOverkill = +(thisHitMaxDamage > (0.5 * maxrollEnemyHp));
 				enemyHp -= thisHitMinDamage;
 				maxrollEnemyHp -= thisHitMaxDamage;
 				overkillNo += isOverkill;
 				maxOverkillNo += isMaxOverkill;
+				isOverkill = +(enemyHp <= (0.5 * initEnemyHp));
+				isMaxOverkill = +(maxrollEnemyHp <= (0.5 * initEnemyHp));
 
 				baseNPGain = f(servantNpGain) * f(f((artsFirst && faceCard !== 'NP') ? 1 : 0) +  f(f(cardNpValue) * f(1 + (args.extra ? 0 : cardMod))))
 						* f(enemyServerMod) * f(1 + npGen);
@@ -668,12 +668,11 @@ async function test (servantId, argStr, servantName) {
 
 				descriptionString += "| " + ((i+1)+'   ').substring(0, 3) + "| " +(Math.floor(thisHitMinDamage)+' '.repeat(7)).substring(0, 7) + "|" + (Math.floor(enemyHp)+' '.repeat(8)).substring(0, 8) + "| " + (minNPRgen.toFixed(2)+"%"+' '.repeat(7)).substring(0, 7) + "|\n";
 
-				console.log(`thisHitDamage: ${thisHitMaxDamage},\nremainingHp: ${maxrollEnemyHp},\nisOverkill: ${isMaxOverkill}\n`);
 			}
 
 			descriptionString += '```';
 
-			npfields.push({name: 'NP Gain Sim', value: descriptionString, inline: false});
+			npfields.push({name: 'Refund', value: descriptionString, inline: false});
 			npfields.push({name: 'Total Minroll Refund', value: `**${minNPRgen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${overkillNo} overkill hits)`, inline: false});
 			npfields.push({name: 'Total Maxroll Refund', value: `**${maxNPRegen.toFixed(2)}%** ${emojis.find(e=>e.name==='npbattery')} (${maxOverkillNo} overkill hits)`, inline: false});
 
@@ -754,7 +753,7 @@ async function test (servantId, argStr, servantName) {
 async function chain (servantId, argStr, servantName, match) {
 
 	let cards = match.match(/([bqa]|(np))/g), attache = '', totalDamage = 0, minrollTotal = 0, maxrollTotal = 0, description = '', title = '', thumbnail = '', servant, chain = [{}, {}, {}];
-	let minEnemyHp, maxEnemyHp, refund = false, minrollTotalRefund = 0, maxrollTotalRefund = 0;
+	let minEnemyHp, maxEnemyHp, refund = false, minrollTotalRefund = 0, maxrollTotalRefund = 0, initEnemyHp;
 
 	for (const key of Object.keys(servants)) {
 
@@ -769,7 +768,7 @@ async function chain (servantId, argStr, servantName, match) {
 	for (let i = 0; i < 3; i++) {
 
 		if (cards[i] === 'np') {
-			chain[i].name = servant.noblePhantasms[0].card;
+			chain[i].name = servant.noblePhantasms[0].card.toLowerCase();
 			chain[i].np = true;
 		}
 		else {
@@ -800,11 +799,13 @@ async function chain (servantId, argStr, servantName, match) {
 	if (chain[0].name === 'buster') attache += '--bf ';
 	else if (chain[0].name === 'arts') attache += '--af ';
 
+	chain = [...chain, {name: 'extra', np: false}];
+
 	if (chain.every((val, i, a) => (val.name === a[0].name) && (val.name === 'buster'))) attache += '--bc ';
 	if (chain.every((val, i, a) => (val.name === a[0].name) && (val.name === 'arts'))) minrollTotalRefund += 20;
+	if (chain.every((val, i, a) => (val.name === a[0].name))) chain[3].command += ' --ecm=3.5 ';
 
 	argStr = attache + argStr;
-	chain = [...chain, {name: 'extra', np: false}];
 
 	let [baseStr, ...commands] = argStr.split(' --card=');
 
@@ -822,8 +823,6 @@ async function chain (servantId, argStr, servantName, match) {
 
 		chain[cardNo].command += command.slice(2) + " ";
 
-		if (chain.every((val, i, a) => (val.name === a[0].name))) chain[3].command += ' --ecm=3.5 ';
-
 	}
 
 	if ((minEnemyHp = baseStr.match(/\s+--hp=\d+/g)) != null) {
@@ -831,6 +830,7 @@ async function chain (servantId, argStr, servantName, match) {
 		refund = true;
 		minEnemyHp = parseInt(minEnemyHp[0].split('=')[1]);
 		maxEnemyHp = parseInt(baseStr.match(/\s+--hp=\d+/g)[0].split('=')[1]);
+		initEnemyHp = minEnemyHp;
 		baseStr = baseStr.replace(/\s+--hp=\d+/g, '');
 
 	}
@@ -874,6 +874,9 @@ async function chain (servantId, argStr, servantName, match) {
 			maxrollTotalRefund += parseFloat(maxTestReply[1].embed.fields.find(el => el.name === 'Total Maxroll Refund').value.slice(2));
 			minEnemyHp -= damageVals[1];
 			maxEnemyHp -= maxDamageVals[2];
+
+			if (minEnemyHp < (0.5 * initEnemyHp)) minEnemyHp = 0;
+			if (maxEnemyHp < (0.5 * initEnemyHp)) maxEnemyHp = 0;
 
 		}
 
