@@ -725,7 +725,7 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Level', value: (args.level ?? servant.lvMax), inline: true},
 				{name: 'Strengthen', value: `${(!!+np) ? emojis.find(e=>e.name==='nplewd') : emojis.find(e=>e.name==='nolewd')} ${!!+np}`, inline: true},
 				{name: 'CE Attack', value: (args.ce ?? 0), inline: true},
-				{name: 'Class Attack Mod', value: `${emojis.find(e=>e.name===servant.className)} ${+(classList[servant.className]/1000).toFixed(2)}x`, inline: true},
+				{name: 'Class Attack Mod', value: `${emojis.find(e=>e.name===servant.className.toLowerCase())} ${+(classList[servant.className]/1000).toFixed(2)}x`, inline: true},
 				{name: 'Class Advantage', value: `${advantage}x`, inline: true},
 				{name: 'Card Attack Multiplier', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card) : emojis.find(e=>e.name===faceCard.toLowerCase())} ${cardValue}x`, inline: true},
 				{name: 'CardMod', value: `${(faceCard === 'NP') ? emojis.find(e=>e.name===servant.noblePhantasms[np].card+'mod') : emojis.find(e=>e.name===faceCard.toLowerCase()+'mod')} ${cardMod*100}%`, inline: true},
