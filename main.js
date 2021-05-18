@@ -633,6 +633,7 @@ async function test (servantId, argStr, servantName) {
 			}
 
 			if ((cardNpValue === 3 &&  !(args.second || args.third)) || args.artsfirst) artsFirst = 1;
+			if (faceCard === 'NP') artsFirst = 0;
 
 			enemyServerMod = args.enemyservermod ?? enemyServerMod;
 
@@ -657,8 +658,8 @@ async function test (servantId, argStr, servantName) {
 				maxrollEnemyHp -= thisHitMaxDamage;
 				overkillNo += isOverkill;
 				maxOverkillNo += isMaxOverkill;
-				isOverkill = +(enemyHp <= (0.5 * initEnemyHp));
-				isMaxOverkill = +(maxrollEnemyHp <= (0.5 * initEnemyHp));
+				isOverkill = +(enemyHp < 0);
+				isMaxOverkill = +(maxrollEnemyHp < 0);
 
 				baseNPGain = f(servantNpGain) * f(f((artsFirst && faceCard !== 'NP') ? 1 : 0) +  f(f(cardNpValue) * f(1 + (args.extra ? 0 : cardMod))))
 						* f(enemyServerMod) * f(1 + npGen);
@@ -875,8 +876,12 @@ async function chain (servantId, argStr, servantName, match) {
 			minEnemyHp -= damageVals[1];
 			maxEnemyHp -= maxDamageVals[2];
 
-			if (minEnemyHp < (0.5 * initEnemyHp)) minEnemyHp = 0;
-			if (maxEnemyHp < (0.5 * initEnemyHp)) maxEnemyHp = 0;
+			if (!card.np) {
+
+				if (minEnemyHp < (0.5 * initEnemyHp)) minEnemyHp = 0;
+				if (maxEnemyHp < (0.5 * initEnemyHp)) maxEnemyHp = 0;
+
+			}
 
 		}
 
