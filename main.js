@@ -690,7 +690,7 @@ async function test (servantId, argStr, servantName) {
 		const replyEmbed = {
 			title: `${faceCard} damage for ${emojis.find(e=>e.name===servant.className.toLowerCase())} ${servantName}`,
 			thumbnail: {
-				url: servant.extraAssets.faces.ascension[Object.keys(servant.extraAssets.faces.ascension).length - 1]
+				url: servant.extraAssets.faces.ascension[Object.keys(servant.extraAssets.faces.ascension).length]
 			},
 			description: `**${total.toLocaleString()}** (${(Math.floor(0.9 * (total - fD) + fD)).toLocaleString()} to ${Math.floor((1.099 * (total - fD) + fD)).toLocaleString()})`
 		};
