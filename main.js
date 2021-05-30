@@ -66,6 +66,7 @@ client.on('message', async function (message) {
 		**str**: used to see np strengh (1 for str, 0 for not; defaults to NA availability)
 		**ce/c**: ce attack stat (defaults to 0)
 		**fou/f**: fou attack stat (defaults to 1k attack fou)
+		**totalattack/ta**: sets total attack stat, overrides fou and ce atk
 		**cardvalue/cmv**: to manually change the card type of a NP (only relevant for Astarte to give her np quick dmg value)
 		**npvalue/npv**: to manually input np scaling (relevant to put astarte's np as quick)
 		**defmod/d**: defense up and down
