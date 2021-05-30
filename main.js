@@ -134,14 +134,15 @@ client.on('message', async function (message) {
 	else if (command === 'addname') {
 		if (message.author.id === '677587347075760165' || message.author.id === '406537966161362955' || message.author.id === '200914311202209793') {
 
-			[id, nickname] = restArgs;
+			[id, ...nickname] = restArgs;
+			nickname = nickname.join(' ');
 			console.log(id, nickname, id in nicknames);
 
 			if (id in nicknames) {
 				if (!nicknames[id].includes(nickname)) {
 					nicknames[id].push(nickname);
-					reply = `Set ${id}: ${nickname}`;
 					require('fs').writeFileSync('./nicknames.json', JSON.stringify(nicknames, null, 2));
+					reply = `Set ${id}: ${nickname}`;
 				}
 			}
 		}
@@ -224,6 +225,11 @@ async function test (servantId, argStr, servantName) {
 		'--bc'			:	Boolean,
 		'--brave'		:	Boolean,
 		'--verbose'		:	Boolean,
+		'--supergrail'		:	Boolean,
+		'--superad'		:	Boolean,
+		'--supersumo'		:	Boolean,
+		'--superhns'		:	Boolean,
+		'--superscope'		:	Boolean,
 
 		//Aliases
 		'--v'			:	'--verbose',
@@ -265,6 +271,7 @@ async function test (servantId, argStr, servantName) {
 		'--man'			:	'--human',
 		'--cd'			:	'--critdamage',
 		'--ta'			:	'--totalattack',
+		'--superbg'		:	'--supergrail',
 
 		//Enemy classes
 		'--saber'		:	Boolean,
@@ -534,6 +541,36 @@ async function test (servantId, argStr, servantName) {
 			pMod -= (critDamage - 5);
 		}
 
+		if (args.supergrail || args.superscope || args.supersumo || args.superad || args.superhns) atk += (args.totalattack) ? 0 : 2000;
+
+		if (args.supergrail) {
+
+			atk += (args.totalattack) ? 0 : 400;
+			npMod += 0.8;
+
+		}
+
+		if (args.superad) {
+
+			if (args.buster || (servant.noblePhantasms[np].card === 'buster' && !faceCard)) cardMod += 0.1;
+
+			npMod += 0.1;
+
+		}
+
+		if (args.superhns) {
+
+			if (isCrit && faceCard) pMod += 0.15;
+
+			npMod += 0.15;
+		}
+
+		if (args.supersumo) {
+
+			atkMod += 0.15;
+
+		}
+
 		let val = 0;
 		let fD = f(flatDamage);
 		let npGainEmbed = null;
@@ -555,6 +592,7 @@ async function test (servantId, argStr, servantName) {
 		for (const hit of hits.slice(0, hits.length - 1)) {
 
 			total += val * f(f(hit)/f(100)); //add until second-to-last, then add the difference
+
 		}
 
 		total += (val - total);
