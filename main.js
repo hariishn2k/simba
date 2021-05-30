@@ -230,6 +230,7 @@ async function test (servantId, argStr, servantName) {
 		'--supersumo'		:	Boolean,
 		'--superhns'		:	Boolean,
 		'--superscope'		:	Boolean,
+		'--supered'		:	Boolean,
 
 		//Aliases
 		'--v'			:	'--verbose',
@@ -272,6 +273,8 @@ async function test (servantId, argStr, servantName) {
 		'--cd'			:	'--critdamage',
 		'--ta'			:	'--totalattack',
 		'--superbg'		:	'--supergrail',
+		'--sscope'		:	'--superscope',
+		'--super'		:	'--supered',
 
 		//Enemy classes
 		'--saber'		:	Boolean,
@@ -388,6 +391,13 @@ async function test (servantId, argStr, servantName) {
 
 		enemyClass = enemyClass || 'shielder';
 		enemyAttribute = enemyAttribute || servant.attribute;
+
+		if (args.supered) {
+
+			args.level = 100;
+			args.fou = 2000;
+
+		}
 
 		let servantClassRate = f(classList[servant.className]/f(1000));
 		let atk = (args.level ? servant.atkGrowth[args.level - 1] : servant.atkMax) + (args.fou ?? 1000) + (args.ce ?? 0);
