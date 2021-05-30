@@ -192,6 +192,7 @@ async function test (servantId, argStr, servantName) {
 		'--str'			:	Number,
 		'--ce'			:	Number,
 		'--fou'			:	Number,
+		'--totalattack'		:	Number,
 		'--cardvalue'		:	Number,
 		'--npval'		:	Number,
 		'--npgen'		:	[Number],
@@ -262,6 +263,7 @@ async function test (servantId, argStr, servantName) {
 		'--ecm'			:	'--extracardmodifier',
 		'--man'			:	'--human',
 		'--cd'			:	'--critdamage',
+		'--ta'			:	'--totalattack',
 
 		//Enemy classes
 		'--saber'		:	Boolean,
@@ -381,6 +383,9 @@ async function test (servantId, argStr, servantName) {
 
 		let servantClassRate = f(classList[servant.className]/f(1000));
 		let atk = (args.level ? servant.atkGrowth[args.level - 1] : servant.atkMax) + (args.fou ?? 1000) + (args.ce ?? 0);
+
+		atk = args.totalattack ?? atk;
+
 		let advantage = f(classRelation[servant.className][enemyClass]/f(1000));
 		let cardMod = f(args.cardmod?.reduce((acc, val) => acc + val) ?? 0)/f(100);
 		let critDamage = f(args.critdamage?.reduce((acc, val) => acc + val) ?? 0)/f(100);
