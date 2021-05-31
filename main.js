@@ -114,22 +114,37 @@ client.on('message', async function (message) {
 		**bc/busterchainmod**: buster brave chain dmg bonus`;
 	}
 	else if (command === 'getnames') {
-		let servant = restArgs[0];
+
+		let servant = restArgs[0], title = `No matches found for ${servant}!`, description = '';
 
 		if (+servant === +servant) {
-			reply = (nicknames[servant].length > 0) ? `**Nicknames for Servant #${servant}**:\n${JSON.stringify(nicknames[servant])}` : `No matches found for ${servant}`;
+
+			if (nicknames[servant] && nicknames[servant].length > 0) {
+
+				title = `**Nicknames for Servant #${servant}**:`;
+				description = nicknames[servant].join('\n');
+
+			}
 		}
 		else {
 			let id = Object.keys(nicknames).find(id => nicknames[id].includes(servant));
 			let names = nicknames[id];
 
 			if (names) {
-				reply = `**Nicknames for ${servant} (ID #${id})**:\n${JSON.stringify(names)}`;
-			}
-			else {
-				reply = `No matches found for ${servant}`;
+
+				title = `**Nicknames for ${servant} (ID #${id})**:`
+				description = names.join('\n');
+
 			}
 		}
+
+		reply = {
+			embed: {
+				title,
+				description
+			}
+		};
+
 	}
 	else if (command === 'addname') {
 		if (message.author.id === '677587347075760165' || message.author.id === '406537966161362955' || message.author.id === '200914311202209793') {
