@@ -743,6 +743,7 @@ async function test (servantId, argStr, servantName) {
 
 		const replyEmbed = {
 			title: `${faceCard} damage for ${emojis.find(e=>e.name===servant.className.toLowerCase())} ${servantName}`,
+			url: `https://apps.atlasacademy.io/db/${servantId <= maxNAServant ? 'NA' : 'JP'}/servant/${servantId}`,
 			thumbnail: {
 				url: servant.extraAssets.faces.ascension[Object.keys(servant.extraAssets.faces.ascension).length]
 			},
