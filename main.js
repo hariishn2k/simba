@@ -951,6 +951,7 @@ async function chain (servantId, argStr, servantName, match) {
 
 	const replyEmbed = {
 		title,
+		url: `https://apps.atlasacademy.io/db/${servantId <= maxNAServant ? 'NA' : 'JP'}/servant/${servantId}`,
 		thumbnail,
 		description
 	};
