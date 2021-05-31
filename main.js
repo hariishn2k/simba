@@ -114,14 +114,14 @@ client.on('message', async function (message) {
 		**bc/busterchainmod**: buster brave chain dmg bonus`;
 	}
 	else if (command === 'getnames') {
-		servant = restArgs[0];
+		let servant = restArgs[0];
 
 		if (+servant === +servant) {
-			reply = (nicknames[servant].length > 0) ? nicknames[servant] : `No matches found for ${servant}`;
+			reply = (nicknames[servant].length > 0) ? `**Nicknames for Servant #${servant}**:\n${JSON.stringify(nicknames[servant])}` : `No matches found for ${servant}`;
 		}
 		else {
-			id = Object.keys(nicknames).find(id => nicknames[id].includes(servant));
-			names = nicknames[id];
+			let id = Object.keys(nicknames).find(id => nicknames[id].includes(servant));
+			let names = nicknames[id];
 
 			if (names) {
 				reply = `**Nicknames for ${servant} (ID #${id})**:\n${JSON.stringify(names)}`;
