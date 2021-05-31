@@ -121,7 +121,7 @@ client.on('message', async function (message) {
 
 			if (nicknames[servant] && nicknames[servant].length > 0) {
 
-				title = `**Nicknames for Servant #${servant}**:`;
+				title = `Nicknames for Servant #${servant}:`;
 				description = nicknames[servant].join('\n');
 
 			}
@@ -132,7 +132,7 @@ client.on('message', async function (message) {
 
 			if (names) {
 
-				title = `**Nicknames for ${servant} (ID #${id})**:`
+				title = `Nicknames for ${servant} (ID #${id}):`
 				description = names.join('\n');
 
 			}
