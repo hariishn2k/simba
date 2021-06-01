@@ -178,7 +178,20 @@ client.on('message', async function (message) {
 		reply = await bing(restArgs.join(' '));
 	}
 	else if (command === 'junao') {
-		reply = 'https://imgur.com/eA0YLIQ\nhttps://imgur.com/IAYH9Vb';
+
+		linkMerlin = 'https://imgur.com/eA0YLIQ';
+		linkWaver = 'https://imgur.com/IAYH9Vb';
+		merlinEmbed = {
+			title: 'Junao/Merlin',
+			description: linkMerlin,
+		};
+		waverEmbed = {
+			title: 'Junao/Waver',
+			description: linkWaver,
+		};
+
+		reply = [{embed : waverEmbed}, {embed: merlinEmbed}];
+
 	}
 
 	if (reply) {
