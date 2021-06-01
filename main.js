@@ -177,6 +177,9 @@ client.on('message', async function (message) {
 	else if (command === 'google') {
 		reply = await bing(restArgs.join(' '));
 	}
+	else if (command === 'junao') {
+		reply = 'https://imgur.com/eA0YLIQ\nhttps://imgur.com/IAYH9Vb';
+	}
 
 	if (reply) {
 
