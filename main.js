@@ -250,7 +250,7 @@ async function test (servantId, argStr, servantName) {
 		'--enemyservermod'	:	Number,
 		'--serverrate'		:	Number,
 		'--stargen'		:	Number,
-		//'--stars'		:	Boolean,
+		'--stars'		:	Boolean,
 		'--cardrefundvalue'	:	Number,
 		'--enemyhp'		:	Number,
 		'--bc'			:	Boolean,
@@ -668,8 +668,8 @@ async function test (servantId, argStr, servantName) {
 
 			}
 
-			let minStars = `${parseInt((totalDropChance*100)/100)} stars plus ${((totalDropChance*100)%100).toFixed(2)}% chance`;
-			let maxStars = `${parseInt((totalMaxDropChance*100)/100)} stars plus ${((totalMaxDropChance*100)%100).toFixed(2)}% chance`;
+			let minStarsTable = star_gen_table(parseInt((totalDropChance*100)/100), (((totalDropChance*100)%100)/100).toFixed(2));
+			let maxStarsTable = star_gen_table(parseInt((totalMaxDropChance*100)/100), (((totalMaxDropChance*100)%100)/100).toFixed(2));
 
 			starfields = [
 				{name: 'Star Gen', value: `${emojis.find(e=>e.name==='instinct')} ${servant.starGen/10}%`, inline: true},
@@ -679,8 +679,8 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Server Rate Mod', value: `${emojis.find(e=>e.name==='berserker')} ${serverRate}`, inline: true},
 				{name: 'Star Gen Mod', value: `${emojis.find(e=>e.name==='stargen')} ${starGen}`, inline: true},
 				{name: 'Card Star Value', value: `${emojis.find(e=>e.name==='starrateup')} ${cardStarValue}`, inline: true},
-				{name: 'Minroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${minStars}`},
-				{name: 'Maxroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${maxStars}`}
+				{name: 'Minroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${minStarsTable}`},
+				{name: 'Maxroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${maxStarsTable}`}
 			];
 
 			console.log(args.quickfirst);
@@ -1133,6 +1133,37 @@ function calculate(calc) {
 
 /*
  * The above two functions (viz. `parseCalculationString` and `calculate`) have been taken and slightly modified from https://stackoverflow.com/a/32292728, written by 'Stuart'.
+ */
+
+function star_gen_table(star_drop_chance, hits) {
+
+    const guaranteed_stars = Math.floor(star_drop_chance);
+    const extra_star_chance = star_drop_chance - guaranteed_stars;
+
+    const prob_distribution_table = Array(hits).fill(0).map(() => Array(hits * 3 + 1).fill(0));
+
+    prob_distribution_table[0, guaranteed_stars] = 1 - extra_star_chance;
+    prob_distribution_table[0, guaranteed_stars + 1] = extra_star_chance;
+
+    for (let i = 1; i < hits; i++) {
+
+        for (let j = 0; j < i + 1; j++) {
+
+            const base_chance = prob_distribution_table[i-1, guaranteed_stars * i + j] * (1-extra_star_chance);
+            const extra_chance = prob_distribution_table[i-1, guaranteed_stars * i + j] * (extra_star_chance);
+
+            prob_distribution_table[i, guaranteed_stars * (i+1) + j] += base_chance;
+            prob_distribution_table[i, guaranteed_stars * (i+1) + j + 1] += extra_chance;
+
+        }
+    }
+
+    return prob_distribution_table;
+
+}
+
+/*
+ * Credits for the above function (`star_gen_table`) to キューティーキツネ#9634 (discord).
  */
 
 client.login(config.BOT_TOKEN);
