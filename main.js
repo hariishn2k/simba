@@ -796,7 +796,7 @@ async function test (servantId, argStr, servantName) {
 
 		if (args.enemyhp != undefined) reply = [{embed: replyEmbed}, {embed: npGainEmbed}];
 
-		if (args.stars) reply = [{embed: replyEmbed}, {embed: starGenEmbed}];
+		if (args.stars && args.enemyhp != null) reply = [{embed: replyEmbed}, {embed: starGenEmbed}];
 
 		if (args.verbose) {
 
