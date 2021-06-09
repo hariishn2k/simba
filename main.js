@@ -887,10 +887,18 @@ async function chain (servantId, argStr, servantName, match) {
 	if (chain[0].name === 'buster') attache += '--bf ';
 	else if (chain[0].name === 'arts') attache += '--af ';
 
-	chain = [...chain, {name: 'extra', np: false}];
 
 	if (chain.every((val, i, a) => (val.name === a[0].name) && (val.name === 'buster'))) attache += '--bc ';
-	if (chain.every((val, i, a) => (val.name === a[0].name) && (val.name === 'arts'))) minrollTotalRefund += 20;
+
+	if (chain.every((val, i, a) => (val.name === a[0].name) && (val.name === 'arts'))) {
+
+		minrollTotalRefund += 20;
+		maxrollTotalRefund += 20;
+
+	}
+
+	chain = [...chain, {name: 'extra', np: false}];
+
 	if ((chain[0].name === chain[1].name) && (chain[1].name === chain[2].name)) chain[3].command += ' --ecm=3.5 ';
 
 	argStr = attache + argStr;
