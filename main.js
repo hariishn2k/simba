@@ -678,11 +678,10 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Star Gen Mod', value: `${emojis.find(e=>e.name==='stargen')} ${starGen}`, inline: true},
 				{name: 'Card Star Value', value: `${emojis.find(e=>e.name==='starrateup')} ${cardStarValue}`, inline: true},
 				{name: 'Drop Chance (Final Hit)', value: `${emojis.find(e=>e.name==='starrateup')} ${dropChance.toFixed(2)}`, inline: true},
-				{name: 'Minroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${totalGuaranteedStars} (base odds) - ${totalGuaranteedStars + hits.length * +!!(dropChance - Math.floor(dropChance))} (hit extra chance every hit)`},
-				{name: 'Maxroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${totalGuaranteedStars} (base odds) - ${totalGuaranteedStars + hits.length * +!!(dropChance - Math.floor(dropChance))} (hit extra chance every hit)`}
+				{name: 'Minroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} **${totalGuaranteedStars}** (base odds) - **${totalGuaranteedStars + hits.length * +!!(dropChance - Math.floor(dropChance))}** (hit extra chance every hit)`},
+				{name: 'Maxroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} **${totalGuaranteedStars}** (base odds) - **${totalGuaranteedStars + hits.length * +!!(dropChance - Math.floor(dropChance))}** (hit extra chance every hit)`}
 			];
 
-			console.log(args.quickfirst);
 			starGenEmbed = {
 				title: 'Star Gen:',
 				fields: starfields
