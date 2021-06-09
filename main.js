@@ -249,7 +249,7 @@ async function test (servantId, argStr, servantName) {
 		'--extracardmodifier'	:	Number,
 		'--enemyservermod'	:	Number,
 		'--serverrate'		:	Number,
-		'--stargen'		:	Number,
+		'--stargen'		:	[Number],
 		'--stars'		:	Boolean,
 		'--cardrefundvalue'	:	Number,
 		'--enemyhp'		:	Number,
@@ -294,7 +294,7 @@ async function test (servantId, argStr, servantName) {
 		'--busterchainmod'	:	'--bc',
 		'--crv'			:	'--cardrefundvalue',
 		'--af'			:	'--artsfirst',
-		'--qf'			:	'--artsfirst',
+		'--qf'			:	'--quickfirst',
 		'--sm'			:	'--enemyservermod',
 		'--esm'			:	'--enemyservermod',
 		'--sm'			:	'--enemyservermod',
@@ -644,7 +644,7 @@ async function test (servantId, argStr, servantName) {
 
 		if ((args.stars != null) && (args.enemyhp != null)) {
 
-			let enemyHp = args.enemyhp, maxrollEnemyHp = enemyHp, isMaxOverkill = 0, isOverkill = 0, serverRate = (args.serverrate ?? 0), totalDropChance = 0, totalMaxDropChance = 0;
+			let enemyHp = args.enemyhp, maxrollEnemyHp = enemyHp, isMaxOverkill = 0, isOverkill = 0, serverRate = (args.serverrate ?? 0), totalGuaranteedStars = 0, totalMaxGuaranteedStars = 0, dropChance = 0;
 			let overkillNo = 0, maxOverkillNo = 0, minrollTotalVal = 0.9 * f(total - fD) + fD, maxrollTotalVal = 1.099 * f(total - fD) + fD;
 
 			let cardStarValue = (args.quick || (servant.noblePhantasms[np].card === 'quick')) ? 0.8 : 0;
@@ -663,13 +663,11 @@ async function test (servantId, argStr, servantName) {
 				overkillNo += isOverkill;
 				maxOverkillNo += isMaxOverkill;
 
-				totalDropChance += Math.min(f(f(servant.starGen/1000) + f((args.quickfirst &&  (faceCard !== 'NP')) ? 0.2 : 0) + f(cardStarValue * f(1 + cardMod)) + f(serverRate) + f(starGen) + f(0.2 * +(isCrit)) + f(0.3 * +(isOverkill))), 3);
-				totalMaxDropChance += Math.min(f(f(servant.starGen/1000) + f((args.quickfirst && (faceCard !== 'NP')) ? 0.2 : 0) + f(cardStarValue * f(1 + cardMod)) + f(serverRate) + f(starGen) + f(0.2 * +(isCrit)) + f(0.3 * +(isMaxOverkill))), 3);
+				dropChance = Math.min(f(f(servant.starGen/1000) + f((args.quickfirst &&  (faceCard !== 'NP')) ? 0.2 : 0) + f(cardStarValue * f(1 + cardMod)) + f(serverRate) + f(starGen) + f(0.2 * +(isCrit)) + f(0.3 * +(isOverkill))), 3);
+				totalGuaranteedStars += Math.floor(Math.min(f(f(servant.starGen/1000) + f((args.quickfirst &&  (faceCard !== 'NP')) ? 0.2 : 0) + f(cardStarValue * f(1 + cardMod)) + f(serverRate) + f(starGen) + f(0.2 * +(isCrit)) + f(0.3 * +(isOverkill))), 3));
+				totalMaxGuaranteedStars += Math.floor(Math.min(f(f(servant.starGen/1000) + f((args.quickfirst && (faceCard !== 'NP')) ? 0.2 : 0) + f(cardStarValue * f(1 + cardMod)) + f(serverRate) + f(starGen) + f(0.2 * +(isCrit)) + f(0.3 * +(isMaxOverkill))), 3));
 
 			}
-
-			let minStarsTable = star_gen_table(parseInt((totalDropChance*100)/100), (((totalDropChance*100)%100)/100).toFixed(2));
-			let maxStarsTable = star_gen_table(parseInt((totalMaxDropChance*100)/100), (((totalMaxDropChance*100)%100)/100).toFixed(2));
 
 			starfields = [
 				{name: 'Star Gen', value: `${emojis.find(e=>e.name==='instinct')} ${servant.starGen/10}%`, inline: true},
@@ -679,8 +677,9 @@ async function test (servantId, argStr, servantName) {
 				{name: 'Server Rate Mod', value: `${emojis.find(e=>e.name==='berserker')} ${serverRate}`, inline: true},
 				{name: 'Star Gen Mod', value: `${emojis.find(e=>e.name==='stargen')} ${starGen}`, inline: true},
 				{name: 'Card Star Value', value: `${emojis.find(e=>e.name==='starrateup')} ${cardStarValue}`, inline: true},
-				{name: 'Minroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${minStarsTable}`},
-				{name: 'Maxroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${maxStarsTable}`}
+				{name: 'Drop Chance (Final Hit)', value: `${emojis.find(e=>e.name==='starrateup')} ${dropChance.toFixed(2)}`, inline: true},
+				{name: 'Minroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${totalGuaranteedStars} (base odds) - ${totalGuaranteedStars + hits.length * +!!(dropChance - Math.floor(dropChance))} (hit extra chance every hit)`},
+				{name: 'Maxroll Stars Gained', value: `${emojis.find(e=>e.name==='instinct')} ${totalGuaranteedStars} (base odds) - ${totalGuaranteedStars + hits.length * +!!(dropChance - Math.floor(dropChance))} (hit extra chance every hit)`}
 			];
 
 			console.log(args.quickfirst);
@@ -1158,6 +1157,7 @@ function star_gen_table(star_drop_chance, hits) {
         }
     }
 
+	console.log(prob_distribution_table);
     return prob_distribution_table;
 
 }
@@ -1165,5 +1165,67 @@ function star_gen_table(star_drop_chance, hits) {
 /*
  * Credits for the above function (`star_gen_table`) to キューティーキツネ#9634 (discord).
  */
+
+/*function starTable (starChance, hits) {
+
+	const guaranteedStars = Math.floor(starChance);
+	const extraChance = starChance - guaranteedStars;
+	const dist = Array(hits).fill().map(- => Array(hits * 3 + 1).fill(0));
+	const base = guaranteedStars;
+
+	dist[0, base] = 1 - 
+
+}*/
+
+function starTable (starChance, hits) {
+
+	const guaranteedStars = Math.floor(starChance);
+	const extraChance = starChance - guaranteedStars;
+	const table = Array(hits * 3 + 1).fill(0); //e.g. Jack has 5 hits so 16 different outcomes (0..15 stars)
+console.log(starChance, guaranteedStars, extraChance);
+	for (let i = 1; i <= hits; i++) {
+
+		let baseStars = i * guaranteedStars;
+
+		//extra stars
+		for (let j = 0; j <= i; j++) {
+
+			let iCr = factorial(i)/(factorial(j) * factorial(i-j));
+			let chance = iCr * (extraChance ** j) * ((1 - extraChance) ** (i - j));
+
+			table[baseStars+j] = chance;
+
+		}
+	}
+
+	let retStr = '';
+
+	for (let i = 0; i < hits * 3 + 1; i++) {
+
+		if (table[i] !== 0)
+			retStr += `${i} stars (${(table[i]*100).toFixed(2)}%) | `;
+
+		retStr += '\n';
+
+	}
+
+	console.log(table.length);
+	return retStr;
+
+}
+
+let facts = [];
+
+function factorial (n) {
+
+  if (n === 0 || n === 1)
+    return 1;
+
+  if (facts[n] > 0)
+    return facts[n];
+
+  return facts[n] = factorial(n-1) * n;
+
+}
 
 client.login(config.BOT_TOKEN);
