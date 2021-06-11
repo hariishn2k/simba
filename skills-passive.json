@@ -2339,5 +2339,12 @@
       "buster": 6.0,
       "quick": 0
     }
+  },
+  "309": {
+    "cardmod": {
+      "arts": 8.0,
+      "buster": 8.0,
+      "quick": 0
+    }
   }
 }
