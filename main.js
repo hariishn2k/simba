@@ -169,7 +169,7 @@ client.on('message', async function (message) {
 		reply = `${calculate(parseCalculationString(restArgs.join('')))}`;
 	}
 	else if (command === 'refund') {
-		reply = 'https://imgur.com/a/vYJlptt';//`https://discord.gg/TKJmuCR`;
+		reply = 'https://imgur.com/vYJlptt';//`https://discord.gg/TKJmuCR`;
 	}
 	else if (command === 'wikia') {
 		reply = await wikia(restArgs.join(' '));
