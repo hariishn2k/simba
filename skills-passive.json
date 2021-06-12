@@ -2346,5 +2346,19 @@
       "buster": 8.0,
       "quick": 0
     }
+  },
+  "310": {
+    "cardmod": {
+      "arts": 0,
+      "buster": 11.0,
+      "quick": 0
+    }
+  },
+  "311": {
+    "cardmod": {
+      "arts": 10.0,
+      "buster": 0,
+      "quick": 10.0
+    }
   }
 }
