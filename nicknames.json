@@ -223,7 +223,8 @@
     "zerkerlot",
     "zerklot",
     "jet",
-    "zerkalot"
+    "zerkalot",
+    "lancelot"
   ],
   "49": [
     "lubu",
@@ -1195,7 +1196,10 @@
   "248": [
     "hotwheels",
     "ashwatthama",
-    "asvatthama"
+    "asvatthama",
+    "ash",
+    "ashwatthaman",
+    "ashvatthaman"
   ],
   "249": [
     "asclepius",
@@ -1514,5 +1518,16 @@
   ],
   "309": [
     "morgan"
+  ],
+  "310": [
+    "fkgawain",
+    "girlwain",
+    "galwain",
+    "femgawain"
+  ],
+  "311": [
+    "fktristan",
+    "femtristan",
+    "voodoo"
   ]
 }
