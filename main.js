@@ -900,8 +900,6 @@ async function chain (servantId, argStr, servantName, match) {
 
 	chain = [...chain, {name: 'extra', np: false}];
 
-	if ((chain[0].name === chain[1].name) && (chain[1].name === chain[2].name)) chain[3].command += ' --ecm=3.5 ';
-
 	argStr = attache + argStr;
 
 	let [baseStr, ...commands] = argStr.split(' --card=');
@@ -921,6 +919,10 @@ async function chain (servantId, argStr, servantName, match) {
 		chain[cardNo].command += command.slice(2) + " ";
 
 	}
+
+	if ((chain[0].name === chain[1].name) && (chain[1].name === chain[2].name)) chain[3].command = (chain[3].command ?? '') + ' --ecm=3.5 ';
+
+	console.log(JSON.stringify(chain));
 
 	if ((minEnemyHp = baseStr.match(/\s+--hp=\d+/g)) != null) {
 
