@@ -2120,6 +2120,13 @@
       "quick": 8.0
     }
   },
+  "282": {
+    "cardmod": {
+      "arts": 0,
+      "buster": 10.0,
+      "quick": 0
+    }
+  },
   "283": {
     "cardmod": {
       "arts": 0,
@@ -2305,7 +2312,13 @@
       "quick": 6.0
     }
   },
-  "304": {},
+  "304": {
+    "cardmod": {
+      "arts": 9.0,
+      "buster": 0,
+      "quick": 0
+    }
+  },
   "305": {
     "critdamage": {
       "arts": 10.0,
@@ -2359,6 +2372,20 @@
       "arts": 10.0,
       "buster": 0,
       "quick": 10.0
+    }
+  },
+  "312": {
+    "cardmod": {
+      "arts": 9.0,
+      "buster": 0,
+      "quick": 0
+    }
+  },
+  "313": {
+    "cardmod": {
+      "arts": 0,
+      "buster": 0,
+      "quick": 7.0
     }
   }
 }

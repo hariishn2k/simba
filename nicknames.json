@@ -816,7 +816,8 @@
   ],
   "174": [
     "bunyan",
-    "paul"
+    "paul",
+    "help"
   ],
   "175": [
     "casnero",
@@ -1497,7 +1498,8 @@
     "taira",
     "yoshitsune",
     "tairanokagekiyo",
-    "kagekiyo"
+    "kagekiyo",
+    "tiara"
   ],
   "304": [
     "hougen",
@@ -1525,11 +1527,26 @@
     "fkgawain",
     "girlwain",
     "galwain",
-    "femgawain"
+    "femgawain",
+    "barghest"
   ],
   "311": [
     "fktristan",
     "femtristan",
-    "voodoo"
+    "voodoo",
+    "baobhan",
+    "baobhansith"
+  ],
+  "312": [
+    "fklancelot",
+    "lolilot",
+    "faelancelot",
+    "loliofthelake",
+    "melusine",
+    "bahamut"
+  ],
+  "313": [
+    "percival",
+    "longinus"
   ]
 }

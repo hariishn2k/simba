@@ -70,7 +70,7 @@ client.on('message', async function (message) {
 		**cardvalue/cmv**: to manually change the card type of a NP (only relevant for Astarte to give her np quick dmg value)
 		**npvalue/npv**: to manually input np scaling (relevant to put astarte's np as quick)
 		**defmod/d**: defense up and down
-		**flatdamage/fd**: flat dmg up (waver s3, Saberlot OC)
+		**flatdamage/fd/ad**: flat dmg up (waver s3, Saberlot OC)
 		**semod/se**: overcharge np dmg increase (for Gilgamesh its 150 at oc1)
 		**pmod/p**: powermod vs specific traits (Jack OC, Raiko s3)
 		**specialdefensemod/sdm**: special defense up and down (Gawain's damage reduction in Camelot, for example)
@@ -147,7 +147,7 @@ client.on('message', async function (message) {
 
 	}
 	else if (command === 'addname') {
-		if (message.author.id === '677587347075760165' || message.author.id === '406537966161362955' || message.author.id === '200914311202209793') {
+		if (message.author.id === '677587347075760165' || message.author.id === '406537966161362955' || message.author.id === '200914311202209793' || message.author.id === '272691231883132928' || message.author.id === '455223550085693440') {
 
 			[id, ...nickname] = restArgs;
 			nickname = nickname.join(' ');
@@ -286,6 +286,7 @@ async function test (servantId, argStr, servantName) {
 		'--d'			:	'--defmod',
 		'--def'			:	'--defmod',
 		'--fd'			:	'--flatdamage',
+		'--ad'			:	'--flatdamage',
 		'--se'			:	'--semod',
 		'--p'			:	'--pmod',
 		'--sdm'			:	'--specialdefensemod',
@@ -393,7 +394,7 @@ async function test (servantId, argStr, servantName) {
 
 		nps = Object.keys(servants[Object.keys(servants).find(x => ((servants[x].collectionNo === parseInt(servantId)) && 'noblePhantasms' in servants[x]))].noblePhantasms);
 
-		if (parseInt(servantId) === 268) np = nps[0];
+		if (parseInt(servantId) === 268 || parseInt(servantId) === 312) np = nps[0];
 
 		if (args.str != null) {
 			if (args.str > 0) np = nps[nps.length - 1];
