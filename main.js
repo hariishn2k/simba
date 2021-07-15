@@ -80,16 +80,9 @@ client.on('message', async function (message) {
 			}
 			else {
 
-				let matches, hps;
+				let matches;
 
 				restArgs = restArgs.slice(1).join(' ').split('#')[0].replace(/\/\*[\s\S]*?(\*\/)/g, '');
-
-				if ((hps = restArgs.match(/(hp\d+)/g)) != null) {
-
-					restArgs = restArgs.replace(/\s+(hp\d+)/g, '');
-					hps = hps.map(x => x.replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1'));
-
-				}
 
 				if ((matches = restArgs.match(/([bqa]|(np)){3}/g)) != null)
 					restArgs = restArgs.replace(/\s+([bqa]|(np)){3}/g, '');
@@ -97,30 +90,10 @@ client.on('message', async function (message) {
 				argStr = restArgs.replace(/\|/g, '').replace(/([A-z])(-?\d)/g, '$1=$2').replace(/([a-z]+)/gi, '--$1');
 				servantId = (+servant === +servant) ? +servant : Object.keys(nicknames).find(id => nicknames[id].includes(servant));
 
-				if (hps != null) {
+				if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
+				else if (matches != null) reply = await chain(servantId, argStr.toLowerCase(), servant, matches[0]);
+				else reply = await test(servantId, argStr.toLowerCase(), servant);
 
-					replies = [];
-
-					for (let hp of hps) {
-
-						argStr = `${hp} ${argStr}`;
-
-						if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
-						else if (matches != null) replies.push(await chain(servantId, argStr.toLowerCase(), servant, matches[0]));
-						else replies.push(await test(servantId, argStr.toLowerCase(), servant));
-
-					}
-
-					reply = replies;
-
-				}
-				else {
-
-					if (typeof servantId === 'undefined') reply = `No match found for ${servant}`;
-					else if (matches != null) reply = await chain(servantId, argStr.toLowerCase(), servant, matches[0]);
-					else reply = await test(servantId, argStr.toLowerCase(), servant);
-
-				}
 			}
 
 		}
@@ -948,6 +921,8 @@ async function chain (servantId, argStr, servantName, match) {
 	}
 
 	if ((chain[0].name === chain[1].name) && (chain[1].name === chain[2].name)) chain[3].command = (chain[3].command ?? '') + ' --ecm=3.5 ';
+
+	console.log(JSON.stringify(chain));
 
 	if ((minEnemyHp = baseStr.match(/\s+--hp=\d+/g)) != null) {
 
